@@ -1,6 +1,6 @@
 using Fashion.Application.Interfaces.Repository;
 using Fashion.Application.Interfaces.Service;
-using Fashion.Entities;
+using Fashion.Domain.Entities;
 
 namespace Fashion.Application.Service;
 

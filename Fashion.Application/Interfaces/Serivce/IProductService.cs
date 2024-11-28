@@ -1,4 +1,4 @@
-using Fashion.Entities;
+using Fashion.Domain.Entities;
 
 namespace Fashion.Application.Interfaces.Service;
 

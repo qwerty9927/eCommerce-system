@@ -1,5 +1,5 @@
 using Fashion.Application.Interfaces.Repository;
-using Fashion.Entities;
+using Fashion.Domain.Entities;
 using Fashion.Services.repository;
 
 namespace Fashion.Infrastructure.Data.Repository;

@@ -1,5 +1,5 @@
 ﻿using Fashion.Infrastructure.Data;
-using Fashion.Entities;
+using Fashion.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fashion.Services.repository

@@ -1,18 +1,25 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Fashion.Entities
+﻿namespace Fashion.Domain.Entities
 {
     public class Product : BaseEntity
     {
-        [Column(name: "Product_Name")]
-        public string ProductName { get; set; }
+        public string ProductName { get; set; } = string.Empty;
 
         public float Price { get; set; }
 
-        [Column(name: "URL_Image")]
+        public int Quantity { get; set; }
+
         public string URLImage { get; set; } = string.Empty;
 
-        [Column(name: "Is_Active")]
         public bool IsActive { get; set; }
+
+        public List<OrderDetail> OrderDetails { get; set; }
+
+        public string BrandId { get; set; }
+
+        public Brand Brand { get; set; }
+
+        public string CategoryId { get; set; }
+
+        public Category Category { get; set; }
     }
 }
