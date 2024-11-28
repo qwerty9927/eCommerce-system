@@ -1,9 +1,10 @@
 using Fashion.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fashion.Infrastructure.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<User>
 {
     public DbSet<Brand> Brands { get; set; }
     public DbSet<Cart> Carts { get; set; }
@@ -13,7 +14,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<DeliveryInformation> DeliveryInformations { get; set; }
     public DbSet<OrderDetail> OrderDetails { get; set; }
     public DbSet<Order> Orders { get; set; }
-    public DbSet<User> Users { get; set; }
     public DbSet<Product> Products { get; set; }
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 }

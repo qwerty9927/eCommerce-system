@@ -18,70 +18,41 @@ namespace Fashion.Services.repository
 
         public async Task<IList<T>> GetAsync()
         {
-            try
-            {
-                return await _dbSet.AsNoTracking().ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
         public async Task<T> GetByIdAsync(string id)
         {
-            try
-            {
-                return await _dbSet.AsNoTracking().FirstAsync(x => x.Id == id);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return await _dbSet.AsNoTracking().FirstAsync(x => x.Id == id);
         }
 
         public async Task<bool> CreateAsync(T entity)
         {
             if (entity == null) return false;
-            try
-            {
-                await _dbSet.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<bool> DeleteAsync(T entity)
         {
             if (entity == null) return false;
-            try
-            {
-                _dbSet.Remove(entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<bool> UpdateAsync(T entity)
         {
-            if (entity == null || entity.GetType() != typeof(T)) return false;
-            try
-            {
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            if (entity == null) return false;
+
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }
