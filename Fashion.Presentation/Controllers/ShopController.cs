@@ -4,16 +4,22 @@ using Fashion.Presentation.Models;
 
 namespace Fashion.Presentation.Controllers;
 
-public class HomeController : Controller
+public class ShopController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    public ShopController(ILogger<HomeController> logger)
     {
         _logger = logger;
     }
 
     public IActionResult Index()
+    {
+        return View();
+    }
+
+    [HttpGet("shop/{id}")]
+    public IActionResult Detail(int id)
     {
         return View();
     }

@@ -4,11 +4,11 @@ using Fashion.Presentation.Models;
 
 namespace Fashion.Presentation.Controllers;
 
-public class HomeController : Controller
+public class CheckoutController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    public CheckoutController(ILogger<HomeController> logger)
     {
         _logger = logger;
     }
