@@ -6,7 +6,7 @@ namespace Fashion.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<User>
 {
-    public DbSet<Brand> Brands { get; set; }
+    public DbSet<Size> Sizes { get; set; }
     public DbSet<Cart> Carts { get; set; }
     public DbSet<CartDetail> CartDetails { get; set; }
     public DbSet<Category> Categories { get; set; }

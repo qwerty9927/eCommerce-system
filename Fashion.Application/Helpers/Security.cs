@@ -2,6 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using Fashion.Domain.Constants;
 using Fashion.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 
@@ -27,12 +29,16 @@ public static class Security
         }
     }
 
-    public static string GenerateJwtToken(User user, string secretKey)
+    public static string GenerateJwtToken(User user, List<string> roles, string secretKey)
     {
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(ClaimTypesExtension.UserId, user.Id)
         };
+
+        claims.AddRange(roles?.Select(r => new Claim(ClaimTypes.Role, r)) ?? []);
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

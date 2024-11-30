@@ -11,6 +11,6 @@ namespace Fashion.Domain.Entities
 
         public string URLImage { get; set; } = string.Empty;
 
-        public bool IsDeleted { get; set; }
+        public int? VerifyCode { get; set; }
     }
 }

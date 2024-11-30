@@ -8,8 +8,6 @@
 
         public int Quantity { get; set; }
 
-        public float Total { get; set; }
-
         public string CartId { get; set; }
     }
 }
