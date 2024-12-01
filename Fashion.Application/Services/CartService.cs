@@ -30,8 +30,8 @@ public class CartService(
             }
 
             CartDto result = foundCart.Adapt<CartDto>();
-            return new SuccessResponse<CartDto>(result);
 
+            return new SuccessResponse<CartDto>(result);
         }
         catch (BaseException ex)
         {
@@ -215,7 +215,11 @@ public class CartService(
             Cart foundCart = await cartRepository.GetByUserIdAsync(userId);
             if (foundCart == null)
             {
-                throw new Exception("Cart is not found");
+                throw new BaseException
+                {
+                    Message = "Cart not found",
+                    Code = (int)HttpStatusCode.NotFound
+                };
             }
 
             foundCart.CartDetails.Remove(foundCart.CartDetails.First(cd => cd.Id == cartDetailId));
@@ -223,7 +227,7 @@ public class CartService(
             bool isUpdated = await cartRepository.UpdateAsync(foundCart);
             if (!isUpdated)
             {
-                throw new Exception("Service is problem");
+                throw new BaseException();
             }
 
             CartDto result = (await cartRepository.GetByUserIdAsync(userId)).Adapt<CartDto>();

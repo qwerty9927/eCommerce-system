@@ -3,6 +3,7 @@ using Fashion.Application.Interfaces.Repository;
 using Fashion.Domain.Entities;
 using Fashion.Infrastructure.Data;
 using Fashion.Infrastructure.Data.Repository;
+using Fashion.Infrastructure.PaymentProvider;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,9 @@ public static class DependencyInjection
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IPaymentProfileRepository, PaymentProfileRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<IStripeProvider, StripeProvider>();
 
         return services;
     }

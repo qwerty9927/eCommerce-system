@@ -12,5 +12,7 @@ namespace Fashion.Domain.Entities
         public string URLImage { get; set; } = string.Empty;
 
         public int? VerifyCode { get; set; }
+
+        public string? UserPaymentId { get; set; }
     }
 }

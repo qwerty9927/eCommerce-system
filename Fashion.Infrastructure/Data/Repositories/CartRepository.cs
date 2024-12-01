@@ -7,16 +7,16 @@ namespace Fashion.Infrastructure.Data.Repository;
 
 public class CartRepository(ApplicationDbContext context) : RepositoryAsync<Cart>(context), ICartRepository
 {
-    public new async Task<Cart> GetByIdAsync(string id)
+    public new async Task<Cart?> GetByIdAsync(string id)
     {
         return await Table
             .Where(cart => cart.Id == id)
             .Include(c => c.CartDetails)
             .ThenInclude(cd => cd.Product)
-            .FirstAsync();
+            .FirstOrDefaultAsync();
     }
 
-    public async Task<Cart> GetByUserIdAsync(string userId)
+    public async Task<Cart?> GetByUserIdAsync(string userId)
     {
         return await Table
             .Where(cart => cart.UserId == userId && cart.IsActive)
@@ -24,6 +24,6 @@ public class CartRepository(ApplicationDbContext context) : RepositoryAsync<Cart
             .ThenInclude(cd => cd.Product)
             .Include(c => c.CartDetails)
             .ThenInclude(cd => cd.Size)
-            .FirstAsync();
+            .FirstOrDefaultAsync();
     }
 }
