@@ -35,7 +35,7 @@ public class AccountController(IAccountService accountService) : ControllerBase
         return Ok(result);
     }
 
-    [Authorize(Roles = RoleConstant.User)]
+    [Authorize(Roles = RoleConstant.Admin)]
     [HttpPost]
     public async Task<IActionResult> CreateAccountAsync(CreateAccount request)
     {
@@ -46,7 +46,7 @@ public class AccountController(IAccountService accountService) : ControllerBase
 
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.User}")]
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync(UpdateRequest request)
+    public async Task<IActionResult> UpdateAsync(UpdateAccount request)
     {
         var result = await accountService.UpdateAsync(request);
 

@@ -9,6 +9,6 @@ public interface IAccountService
     Task<BaseResponse<object>> LoginAsync(string email, string password);
     Task<BaseResponse<bool>> CreateRoleAsync(string roleName);
     Task<BaseResponse<bool>> CreateAccountAsync(CreateAccount request);
-    Task<BaseResponse<bool>> UpdateAsync(UpdateRequest request);
+    Task<BaseResponse<bool>> UpdateAsync(UpdateAccount request);
     Task<BaseResponse<bool>> DeleteAsync(string accountId);
 }

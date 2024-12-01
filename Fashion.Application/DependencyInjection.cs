@@ -1,5 +1,6 @@
 using Fashion.Application.Configurations;
 using Fashion.Application.Interfaces.Service;
+using Fashion.Application.Mapping;
 using Fashion.Application.Service;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +13,16 @@ public static class DependencyInjection
     {
         // Configuration
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Name));
+        services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Name));
+
+        // System Services
+        services.RegisterMapping();
 
         // Services
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ICartService, CartService>();
+        services.AddScoped<IOrderService, OrderService>();
 
         return services;
     }

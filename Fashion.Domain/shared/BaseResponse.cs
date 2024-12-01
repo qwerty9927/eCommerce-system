@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace Fashion.Domain.Shared;
 
 public class BaseResponse<T>

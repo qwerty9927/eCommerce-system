@@ -138,7 +138,7 @@ public class AccountService(
         }
     }
 
-    public async Task<BaseResponse<bool>> UpdateAsync(UpdateRequest request)
+    public async Task<BaseResponse<bool>> UpdateAsync(UpdateAccount request)
     {
         try
         {

@@ -7,29 +7,29 @@ namespace Fashion.Services.repository
     public class RepositoryAsync<T> : IRepositoryAsync<T> where T : BaseEntity
     {
         private readonly ApplicationDbContext _context;
-        private readonly DbSet<T> _dbSet;
+        public DbSet<T> Table { get; set; }
 
         public RepositoryAsync(ApplicationDbContext context)
         {
             _context = context;
             _context.Database.EnsureCreated();
-            _dbSet = _context.Set<T>();
+            Table = _context.Set<T>();
         }
 
         public async Task<IList<T>> GetAsync()
         {
-            return await _dbSet.AsNoTracking().ToListAsync();
+            return await Table.AsNoTracking().ToListAsync();
         }
         public async Task<T> GetByIdAsync(string id)
         {
-            return await _dbSet.AsNoTracking().FirstAsync(x => x.Id == id);
+            return await Table.AsNoTracking().FirstAsync(x => x.Id == id);
         }
 
         public async Task<bool> CreateAsync(T entity)
         {
             if (entity == null) return false;
 
-            await _dbSet.AddAsync(entity);
+            await Table.AddAsync(entity);
             await _context.SaveChangesAsync();
 
             return true;
@@ -39,7 +39,7 @@ namespace Fashion.Services.repository
         {
             if (entity == null) return false;
 
-            _dbSet.Remove(entity);
+            Table.Remove(entity);
             await _context.SaveChangesAsync();
 
             return true;
@@ -49,7 +49,7 @@ namespace Fashion.Services.repository
         {
             if (entity == null) return false;
 
-            _dbSet.Update(entity);
+            Table.Update(entity);
             await _context.SaveChangesAsync();
 
             return true;

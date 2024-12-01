@@ -1,6 +1,6 @@
 namespace Fashion.Application.Dtos.Account;
 
-public class UpdateRequest
+public class UpdateAccount
 {
     public string Id { get; set; }
     public string FullName { get; set; }
