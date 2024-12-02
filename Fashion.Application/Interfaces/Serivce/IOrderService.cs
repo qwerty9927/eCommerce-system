@@ -6,7 +6,7 @@ public interface IOrderService
 {
     Task<BaseResponse<bool>> CreateCustomerAsync();
     Task<BaseResponse<bool>> AddCardAsync(string source);
-    Task<BaseResponse<string>> CreatePaymentAsync();
+    Task<BaseResponse<string>> CreatePaymentAsync(int amount);
     Task<BaseResponse<bool>> ConfirmPaymentAsync(string paymentId);
     Task<BaseResponse<bool>> PlaceOrderAsync();
 }

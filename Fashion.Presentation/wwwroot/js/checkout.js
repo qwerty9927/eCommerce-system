@@ -1,4 +1,4 @@
-import { postApi } from "./helper.js";
+import { postApiAsync } from "./helper.js";
 
 function stripeComponent(publicKey) {
     const stripe = Stripe(publicKey);
@@ -18,9 +18,15 @@ function stripeComponent(publicKey) {
             cardErrors.textContent = error.message;
         } else {
             console.log("Source created:", source);
-            postApi(source.id);
+            // postApiAsync(source.id);
         }
     });
 }
 
-export { stripeComponent };
+function checkout() {
+    const publicKey =
+        "pk_test_51QR2Oe4gFB9qz1SHSUdv80XGvZMlVXHvkn1oTtZOPD0PZIRTgEwSr12pfAwzvfzwy5EU0vECRMTkDoM3gfb8fYPq00xe19tt8h";
+
+    stripeComponent(publicKey);
+}
+export default checkout;

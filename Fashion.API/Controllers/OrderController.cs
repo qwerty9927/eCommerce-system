@@ -27,9 +27,9 @@ public class OrderController(
     }
 
     [HttpPost("create-payment")]
-    public async Task<IActionResult> CreatePaymentAsync()
+    public async Task<IActionResult> CreatePaymentAsync([FromBody] int amount)
     {
-        var result = await orderService.CreatePaymentAsync();
+        var result = await orderService.CreatePaymentAsync(amount);
 
         return Ok(result);
     }

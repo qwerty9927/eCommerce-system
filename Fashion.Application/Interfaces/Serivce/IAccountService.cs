@@ -6,7 +6,7 @@ namespace Fashion.Application.Interfaces.Service;
 public interface IAccountService
 {
     Task<BaseResponse<bool>> RegisterAsync(RegisterAccount request);
-    Task<BaseResponse<object>> LoginAsync(string email, string password);
+    Task<BaseResponse<object>> LoginAsync(LoginAccount request);
     Task<BaseResponse<bool>> CreateRoleAsync(string roleName);
     Task<BaseResponse<bool>> CreateAccountAsync(CreateAccount request);
     Task<BaseResponse<bool>> UpdateAsync(UpdateAccount request);

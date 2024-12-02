@@ -14,6 +14,7 @@ public class ProductRepository(ApplicationDbContext context) : RepositoryAsync<P
         List<Product> products = await Table.Where(p => p.ProductName.Contains(keyWord)
                                         && p.IsActive
                                         && p.Category.IsActive)
+                                    .Include(p => p.Sizes)
                                     .Skip(request.PageIndex * request.PageSize)
                                     .Take(request.PageSize)
                                     .ToListAsync();

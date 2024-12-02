@@ -19,9 +19,9 @@ public class AccountController(IAccountService accountService) : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(string email, string password)
+    public async Task<IActionResult> LoginAsync(LoginAccount request)
     {
-        var result = await accountService.LoginAsync(email, password);
+        var result = await accountService.LoginAsync(request);
 
         return Ok(result);
     }

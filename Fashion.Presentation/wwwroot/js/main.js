@@ -1,12 +1,29 @@
-import { stripeComponent } from "./checkout.js";
+import auth from "./auth.js";
+import checkout from "./checkout.js";
+import { analyzeUrl } from "./helper.js";
 import init from "./init.js";
+import shop from "./shop.js";
 
 function main() {
-    const publicKey =
-        "pk_test_51QR2Oe4gFB9qz1SHSUdv80XGvZMlVXHvkn1oTtZOPD0PZIRTgEwSr12pfAwzvfzwy5EU0vECRMTkDoM3gfb8fYPq00xe19tt8h";
-
     init();
-    stripeComponent(publicKey);
+
+    const routeDeserialize = analyzeUrl(window.location.href);
+
+    console.log(routeDeserialize);
+
+    switch (routeDeserialize.route0) {
+        case "account":
+            auth(routeDeserialize.route1);
+            break;
+
+        case "checkout":
+            checkout();
+            break;
+
+        case "shop":
+            shop();
+            break;
+    }
 }
 
 main();

@@ -24,6 +24,15 @@ public class AccountService(
     {
         try
         {
+            var foundUser = await userManager.FindByEmailAsync(request.Email);
+            if (foundUser != null)
+            {
+                throw new BaseException
+                {
+                    Message = "Account was existed"
+                };
+            }
+
             User user = new User
             {
                 Id = Guid.NewGuid().ToString(),
@@ -53,18 +62,18 @@ public class AccountService(
         }
     }
 
-    public async Task<BaseResponse<object>> LoginAsync(string email, string password)
+    public async Task<BaseResponse<object>> LoginAsync(LoginAccount request)
     {
         try
         {
-            var result = await signInManager.PasswordSignInAsync(email, password, isPersistent: false, lockoutOnFailure: false);
+            var result = await signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
             {
                 throw new BaseException();
             }
 
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByEmailAsync(request.Email);
             var roles = (await userManager.GetRolesAsync(user)).ToList();
 
             var token = Security.GenerateJwtToken(user, roles, options.Value.Key);
@@ -76,6 +85,13 @@ public class AccountService(
             return new BadResponse<object>(default)
             {
                 Code = ex.Code ?? (int)HttpStatusCode.Unauthorized,
+                Message = ex.Message ?? "Login failed"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BadResponse<object>(default)
+            {
                 Message = ex.Message ?? "Login failed"
             };
         }

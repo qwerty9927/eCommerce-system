@@ -9,7 +9,6 @@ using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Stripe;
 
 namespace Fashion.Application.Service;
 
@@ -119,7 +118,7 @@ public class OrderService(
         }
     }
 
-    public async Task<BaseResponse<string>> CreatePaymentAsync()
+    public async Task<BaseResponse<string>> CreatePaymentAsync(int amount)
     {
         try
         {
@@ -144,7 +143,7 @@ public class OrderService(
                 };
             }
 
-            var paymentInfo = await stripeProvider.CreatePaymentAsync(foundUser.UserPaymentId);
+            var paymentInfo = await stripeProvider.CreatePaymentAsync(foundUser.UserPaymentId, amount);
 
             // await transactionRepository.CreateAsync(new Transaction{
             //     PaymentId = paymentInfo.Id,
