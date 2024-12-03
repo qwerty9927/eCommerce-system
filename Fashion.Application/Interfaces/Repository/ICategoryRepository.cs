@@ -6,5 +6,5 @@ namespace Fashion.Application.Interfaces.Repository;
 public interface ICategoryRepository : IRepositoryAsync<Category>
 {
     Task<List<Category>> GetAllAsync();
-    Task<Category> GetByNameAsync(string categoryName);
+    Task<Category> GetByIdAsync(string categoryId);
 }

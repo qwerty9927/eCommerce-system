@@ -1,18 +1,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Fashion.Presentation.Models;
+using Fashion.Application.Interfaces.Service;
 
 namespace Fashion.Presentation.Controllers;
 
-public class CartController : Controller
+public class CartController(ICartService cartService) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public CartController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
     public IActionResult Index()
     {
         return View();

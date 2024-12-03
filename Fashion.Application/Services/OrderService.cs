@@ -218,7 +218,7 @@ public class OrderService(
             }
 
             Order newOrder = foundCart.Adapt<Order>();
-            newOrder.Status = OrderStatusConstant.Created.ToString();
+            newOrder.Status = OrderStatusConstant.Pending.ToString();
             newOrder.Total = (decimal)newOrder.OrderDetails.Sum(cd => cd.ProductPrice * cd.Quantity);
 
             var isCreated = await orderRepository.CreateAsync(newOrder);
@@ -231,6 +231,17 @@ public class OrderService(
             var isUpdated = await cartRepository.UpdateAsync(foundCart);
 
             if (!isUpdated)
+            {
+                throw new BaseException();
+            }
+
+            var isCreatedNewCart = await cartRepository.CreateAsync(new Cart
+            {
+                UserId = userId,
+                IsActive = true
+            });
+
+            if (!isCreatedNewCart)
             {
                 throw new BaseException();
             }

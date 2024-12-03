@@ -19,17 +19,21 @@ public class ShopController(
             PageSize = 10
         });
 
-        // var categories = await categoryService.GetAllAsync();
+        var categories = await categoryService.GetAllAsync();
 
-        // ViewBag.Products = productPaging.Data.Adapt<PagingResponseModel<ProductModel>>();
-        // ViewBag.Categories = categories;
+        ViewBag.ProductPaging = productPaging.Data.Adapt<PagingResponseModel<ProductModel>>();
+        ViewBag.Categories = categories.Data.Adapt<List<CategoryModel>>();
 
         return View();
     }
 
     [HttpGet("shop/{id}")]
-    public IActionResult Detail(string id)
+    public async Task<IActionResult> Detail(string id)
     {
+        var product = await productService.GetByIdAsync(id);
+
+        ViewBag.Product = product.Data.Adapt<ProductModel>();
+
         return View();
     }
 

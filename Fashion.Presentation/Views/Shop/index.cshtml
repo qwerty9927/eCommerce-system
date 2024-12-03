@@ -1,5 +1,7 @@
-@model PagingResponseModel<ProductModel>
-
+@{
+  var productPaging = (PagingResponseModel<ProductModel>)ViewBag.ProductPaging;
+  var categories = (List<CategoryModel>)ViewBag.Categories;
+}
     <div class="bg-light py-3">
       <div class="container">
         <div class="row">
@@ -52,14 +54,14 @@
             </div>
             <div class="row mb-5" id="product-space">
 
-              @foreach(var product in Model.Records){
+              @foreach(var product in (productPaging?.Records ?? [])){
                 <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                   <div class="block-4 text-center border">
                     <figure class="block-4-image">
-                      <a href="shop-single.html"><img src="images/cloth_1.jpg" alt="Image placeholder" class="img-fluid"></a>
+                      <a href="shop/@product.Id"><img src="images/cloth_1.jpg" alt="Image placeholder" class="img-fluid"></a>
                     </figure>
                     <div class="block-4-text p-4">
-                      <h3><a href="shop-single.html">@product.ProductName</a></h3>
+                      <h3><a href="shop/@product.Id">@product.ProductName</a></h3>
                       <p class="mb-0"></p>
                       <p class="text-primary font-weight-bold">$@(product?.Sizes?.FirstOrDefault()?.Price ?? 0.00)</p>
                     </div>
@@ -75,8 +77,8 @@
                   <ul>
                     <li id="back-page"><a>&lt;</a></li>
                     <span id="pagination">
-                      @for(var i = 0;i < (int)Math.Ceiling((decimal)Model.TotalRecord/10);i++){
-                        <li class="active"><span>@(i + 1)</span></li>
+                      @for(var i = 0;i < (int)Math.Ceiling((decimal)(productPaging?.TotalRecord ?? 1)/10);i++){
+                        <li class=""><span>@(i + 1)</span></li>
                       }
                     </span>
                     <li id="next-page"><a>&gt;</a></li>
@@ -90,9 +92,9 @@
             <div class="border p-4 rounded mb-4">
               <h3 class="mb-3 h6 text-uppercase text-black d-block">Categories</h3>
               <ul class="list-unstyled mb-0">
-                <li class="mb-1"><a href="#" class="d-flex"><span>Men</span> <span class="text-black ml-auto">(2,220)</span></a></li>
-                <li class="mb-1"><a href="#" class="d-flex"><span>Women</span> <span class="text-black ml-auto">(2,550)</span></a></li>
-                <li class="mb-1"><a href="#" class="d-flex"><span>Children</span> <span class="text-black ml-auto">(2,124)</span></a></li>
+                @foreach(var c in categories){
+                  <li class="mb-1"><a href="#" class="d-flex"><span data="@c.Id" id="category-@c.CategoryName">@c.CategoryName</span> <span class="text-black ml-auto"></span></a></li>
+                }
               </ul>
             </div>
 
@@ -106,32 +108,15 @@
               <div class="mb-4">
                 <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
                 <label for="s_sm" class="d-flex">
-                  <input type="checkbox" id="s_sm" class="mr-2 mt-1"> <span class="text-black">Small (2,319)</span>
+                  <input type="checkbox" id="s_sm" class="mr-2 mt-1"> <span class="text-black">Small</span>
                 </label>
                 <label for="s_md" class="d-flex">
-                  <input type="checkbox" id="s_md" class="mr-2 mt-1"> <span class="text-black">Medium (1,282)</span>
+                  <input type="checkbox" id="s_md" class="mr-2 mt-1"> <span class="text-black">Medium</span>
                 </label>
                 <label for="s_lg" class="d-flex">
-                  <input type="checkbox" id="s_lg" class="mr-2 mt-1"> <span class="text-black">Large (1,392)</span>
+                  <input type="checkbox" id="s_lg" class="mr-2 mt-1"> <span class="text-black">Large</span>
                 </label>
               </div>
-
-              @* <div class="mb-4">
-                <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
-                <a href="#" class="d-flex color-item align-items-center" >
-                  <span class="bg-danger color d-inline-block rounded-circle mr-2"></span> <span class="text-black">Red (2,429)</span>
-                </a>
-                <a href="#" class="d-flex color-item align-items-center" >
-                  <span class="bg-success color d-inline-block rounded-circle mr-2"></span> <span class="text-black">Green (2,298)</span>
-                </a>
-                <a href="#" class="d-flex color-item align-items-center" >
-                  <span class="bg-info color d-inline-block rounded-circle mr-2"></span> <span class="text-black">Blue (1,075)</span>
-                </a>
-                <a href="#" class="d-flex color-item align-items-center" >
-                  <span class="bg-primary color d-inline-block rounded-circle mr-2"></span> <span class="text-black">Purple (1,075)</span>
-                </a>
-              </div> *@
-
             </div>
           </div>
         </div>

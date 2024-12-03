@@ -1,3 +1,4 @@
+using Fashion.Application.Dtos.Cart;
 using Fashion.Application.Interfaces.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,17 +29,17 @@ public class CartController(
     }
 
     [HttpPut("add")]
-    public async Task<IActionResult> AddItemAsync(string productId, int quantity)
+    public async Task<IActionResult> AddItemAsync(AddItemRequest request)
     {
-        var result = await cartService.AddItemAsync(productId, quantity);
+        var result = await cartService.AddItemAsync(request);
 
         return Ok(result);
     }
 
     [HttpPut("remove")]
-    public async Task<IActionResult> RemoveItemAsync(string cartDetailId)
+    public async Task<IActionResult> RemoveItemAsync(RemoveItemRequest request)
     {
-        var result = await cartService.RemoveItemAsync(cartDetailId);
+        var result = await cartService.RemoveItemAsync(request);
 
         return Ok(result);
     }

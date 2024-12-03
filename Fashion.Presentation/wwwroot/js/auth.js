@@ -24,11 +24,26 @@ async function login(e, form) {
         }
 
         setLocalStorage(Constant.Token, response.data.token);
+        await createCart();
         window.location.href = Constant.Url;
     } catch (error) {
         console.error("An error occurred during login:", error);
         authMessage.innerHTML =
             '<div class="alert alert-danger">An unexpected error occurred. Please try again later.</div>';
+    }
+}
+
+async function createCart() {
+    const uri = `${Constant.UrlApi}api/cart`;
+    try {
+        const response = await postApiAsync(uri);
+        console.log(response);
+
+        if (!response.status) {
+            return;
+        }
+    } catch (error) {
+        console.error("An error occurred during login:", error);
     }
 }
 

@@ -27,7 +27,7 @@ public class AccountController(IAccountService accountService) : ControllerBase
     }
 
     [Authorize(Roles = RoleConstant.Admin)]
-    [HttpPost("role/create")]
+    [HttpPost("role")]
     public async Task<IActionResult> CreateRoleAsync(string roleName)
     {
         var result = await accountService.CreateRoleAsync(roleName);

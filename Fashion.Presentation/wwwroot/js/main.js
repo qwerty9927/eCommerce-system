@@ -1,4 +1,5 @@
 import auth from "./auth.js";
+import cart from "./cart.js";
 import checkout from "./checkout.js";
 import { analyzeUrl } from "./helper.js";
 import init from "./init.js";
@@ -22,6 +23,10 @@ function main() {
 
         case "shop":
             shop();
+            break;
+
+        case "cart":
+            cart();
             break;
     }
 }

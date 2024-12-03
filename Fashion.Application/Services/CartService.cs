@@ -113,33 +113,14 @@ public class CartService(
         }
     }
 
-    // public async Task<BaseResponse<bool>> RemoveAsync(string cartId)
-    // {
-    //     try
-    //     {
-    //         var foundCart = await car
-    //         bool isDeleted = await cartRepository.DeleteAsync(cartId);
-
-    //         return new BaseResponse<bool> { Data = isDeleted };
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         return new BadResponse<CartDto>(default)
-    //         {
-    //             Code = ex.Code ?? (int)HttpStatusCode.BadRequest,
-    //             Message = ex.Message ?? "Remove failed"
-    //         };
-    //     }
-    // }
-
-    public async Task<BaseResponse<CartDto>> AddItemAsync(string productId, int quantity)
+    public async Task<BaseResponse<CartDto>> AddItemAsync(AddItemRequest request)
     {
         try
         {
             var userId = httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == ClaimTypesExtension.UserId).Value;
 
             // Validate
-            quantity = quantity > 0 ? quantity : 1;
+            request.Quantity = request.Quantity > 0 ? request.Quantity : 1;
 
             // Check cart and product existed
             Cart foundCart = await cartRepository.GetByUserIdAsync(userId);
@@ -152,7 +133,7 @@ public class CartService(
                 };
             }
 
-            Product foundProduct = await productRepository.GetByIdAsync(productId);
+            Product foundProduct = await productRepository.GetByIdAsync(request.ProductId);
             if (foundProduct == null)
             {
                 throw new BaseException
@@ -162,16 +143,16 @@ public class CartService(
                 };
             }
 
-            var productExisted = foundCart.CartDetails.FirstOrDefault(cd => cd.ProductId == productId);
+            var productExisted = foundCart.CartDetails.FirstOrDefault(cd => cd.ProductId == request.ProductId && cd.SizeId == request.SizeId);
 
             if (productExisted != null)
             {
                 // Update
                 foundCart.CartDetails.ForEach(cd =>
                 {
-                    if (cd.ProductId == productId)
+                    if (cd.ProductId == request.ProductId && cd.SizeId == request.SizeId)
                     {
-                        cd.Quantity = quantity;
+                        cd.Quantity += request.Quantity;
                     }
                 });
             }
@@ -181,8 +162,9 @@ public class CartService(
                 foundCart.CartDetails.Add(
                     new CartDetail
                     {
-                        ProductId = productId,
-                        Quantity = quantity,
+                        ProductId = request.ProductId,
+                        Quantity = request.Quantity,
+                        SizeId = request.SizeId
                     });
             }
 
@@ -206,7 +188,7 @@ public class CartService(
         }
     }
 
-    public async Task<BaseResponse<CartDto>> RemoveItemAsync(string cartDetailId)
+    public async Task<BaseResponse<CartDto>> RemoveItemAsync(RemoveItemRequest request)
     {
         try
         {
@@ -222,7 +204,16 @@ public class CartService(
                 };
             }
 
-            foundCart.CartDetails.Remove(foundCart.CartDetails.First(cd => cd.Id == cartDetailId));
+            CartDetail foundCartItem = foundCart.CartDetails.First(cd => cd.Id == request.CartDetailId);
+
+            if (foundCartItem.Quantity <= request.Quantity)
+            {
+                foundCart.CartDetails.Remove(foundCartItem);
+            }
+            else
+            {
+                foundCartItem.Quantity -= request.Quantity < 0 ? 0 : request.Quantity;
+            }
 
             bool isUpdated = await cartRepository.UpdateAsync(foundCart);
             if (!isUpdated)

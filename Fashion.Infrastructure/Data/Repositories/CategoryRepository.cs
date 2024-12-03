@@ -9,18 +9,19 @@ public class CategoryRepository(ApplicationDbContext context) : RepositoryAsync<
 {
     public async Task<List<Category>> GetAllAsync()
     {
-        List<Category> categories = await Table.Where(c => c.IsActive)
+        List<Category> categories = await Table.IgnoreAutoIncludes()
+                                    .Where(c => c.IsActive)
                                     .ToListAsync();
-
 
         return categories;
     }
 
-    public async Task<Category> GetByNameAsync(string categoryName)
+    public async Task<Category> GetByIdAsync(string categoryId)
     {
-        Category categories = await Table.Where(c => c.IsActive)
-                                    .Include(c => c.IsActive)
-                                    .FirstAsync();
+        Category categories = await Table.IgnoreAutoIncludes()
+                                        .Where(c => c.IsActive && c.Id == categoryId)
+                                        .Include(c => c.Products)
+                                        .FirstAsync();
 
         return categories;
     }
