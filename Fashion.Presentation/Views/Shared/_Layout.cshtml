@@ -40,7 +40,10 @@
                 <div class="site-top-icons">
                   <ul>
                     <li>
-                      <a href="#"><span class="icon icon-person"></span></a>
+                      <a id="login-logout" href="#"></a>
+                    </li>
+                    <li>
+                      <a href="/account" id="my-profile"><span class="icon icon-person"></span></a>
                     </li>
                     <li>
                       <a href="#"><span class="icon icon-heart-o"></span></a>
@@ -48,7 +51,6 @@
                     <li>
                       <a href="/cart" class="site-cart">
                         <span class="icon icon-shopping_cart"></span>
-                        <span class="count">2</span>
                       </a>
                     </li>
                     <li class="d-inline-block d-md-none ml-md-0">
@@ -79,7 +81,9 @@
         </nav>
       </header>
 
-        @RenderBody()
+    <div style="padding-top: 120px;">
+      @RenderBody()
+    </div>
     
     <footer class="site-footer border-top">
       <div class="container">
@@ -166,6 +170,7 @@
     <script src="~/js/aos.js"></script>
 
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="~/js/site.js"></script>
     <script type="module" src="~/js/main.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)

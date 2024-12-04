@@ -14,4 +14,12 @@ public class OrderRepository(ApplicationDbContext context) : RepositoryAsync<Ord
                                 .ThenInclude(od => od.Product)
                                 .FirstAsync();
     }
+
+    public async Task<List<Order>> GetAllAsync(string? userId, bool isAdmin = false)
+    {
+        return await Table.Where(o => isAdmin || o.UserId == userId)
+                                .Include(o => o.OrderDetails)
+                                .ThenInclude(od => od.Product)
+                                .ToListAsync();
+    }
 }

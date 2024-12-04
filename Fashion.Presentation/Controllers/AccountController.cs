@@ -8,6 +8,11 @@ public class AccountController(
     IAccountService accountService
 ) : Controller
 {
+    public IActionResult Index()
+    {
+
+        return View();
+    }
     [HttpGet("account/login")]
     public IActionResult Login()
     {

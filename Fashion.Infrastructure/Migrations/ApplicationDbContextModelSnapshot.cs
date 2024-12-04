@@ -37,8 +37,7 @@ namespace Fashion.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Carts");
                 });
@@ -146,6 +145,9 @@ namespace Fashion.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -173,14 +175,14 @@ namespace Fashion.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DeliveryInformationId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Total")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -309,6 +311,29 @@ namespace Fashion.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Sizes");
+                });
+
+            modelBuilder.Entity("Fashion.Domain.Entities.Transaction", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Fashion.Domain.Entities.User", b =>
@@ -526,8 +551,8 @@ namespace Fashion.Infrastructure.Migrations
             modelBuilder.Entity("Fashion.Domain.Entities.Cart", b =>
                 {
                     b.HasOne("Fashion.Domain.Entities.User", null)
-                        .WithOne("Cart")
-                        .HasForeignKey("Fashion.Domain.Entities.Cart", "UserId")
+                        .WithMany("Carts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -563,9 +588,7 @@ namespace Fashion.Infrastructure.Migrations
 
                     b.HasOne("Fashion.Domain.Entities.DeliveryInformation", "DeliveryInformation")
                         .WithMany()
-                        .HasForeignKey("DeliveryInformationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DeliveryInformationId");
 
                     b.HasOne("Fashion.Domain.Entities.User", null)
                         .WithMany("Orders")
@@ -688,8 +711,7 @@ namespace Fashion.Infrastructure.Migrations
 
             modelBuilder.Entity("Fashion.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Cart")
-                        .IsRequired();
+                    b.Navigation("Carts");
 
                     b.Navigation("Orders");
                 });

@@ -22,7 +22,7 @@
                 <div class="d-flex">
                   <div class="col-6 col-md-4">
                   </div>
-                  <div class="col-6 col-md-4  site-search-icon text-left">
+                  <div class="col-7 col-md-6  site-search-icon text-left">
                     <div class="site-block-top-search">
                       <span class="icon icon-search2"></span>
                       <input type="text" class="form-control border-0" id="search-input" placeholder="Search" />
@@ -38,7 +38,7 @@
                       <a class="dropdown-item" href="#">Children</a>
                     </div>
                   </div>
-                  <div class="btn-group">
+                  @* <div class="btn-group">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference" data-toggle="dropdown">Reference</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
                       <a class="dropdown-item" href="#">Relevance</a>
@@ -48,7 +48,7 @@
                       <a class="dropdown-item" href="#">Price, low to high</a>
                       <a class="dropdown-item" href="#">Price, high to low</a>
                     </div>
-                  </div>
+                  </div> *@
                 </div>
               </div>
             </div>
@@ -93,7 +93,7 @@
               <h3 class="mb-3 h6 text-uppercase text-black d-block">Categories</h3>
               <ul class="list-unstyled mb-0">
                 @foreach(var c in categories){
-                  <li class="mb-1"><a href="#" class="d-flex"><span data="@c.Id" id="category-@c.CategoryName">@c.CategoryName</span> <span class="text-black ml-auto"></span></a></li>
+                  <li class="mb-1"><a href="#" class="d-flex"><span data-categoryId="@c.Id" id="category-@c.CategoryName">@c.CategoryName</span> <span class="text-black ml-auto"></span></a></li>
                 }
               </ul>
             </div>
@@ -105,7 +105,7 @@
                 <input type="text" name="text" id="amount" class="form-control border-0 pl-0 bg-white" disabled="" />
               </div>
 
-              <div class="mb-4">
+              @* <div class="mb-4">
                 <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
                 <label for="s_sm" class="d-flex">
                   <input type="checkbox" id="s_sm" class="mr-2 mt-1"> <span class="text-black">Small</span>
@@ -116,7 +116,7 @@
                 <label for="s_lg" class="d-flex">
                   <input type="checkbox" id="s_lg" class="mr-2 mt-1"> <span class="text-black">Large</span>
                 </label>
-              </div>
+              </div> *@
             </div>
           </div>
         </div>

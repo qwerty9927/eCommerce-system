@@ -10,11 +10,11 @@ namespace Fashion.Application.Service;
 
 public class ProductService(IProductRepository productRepository) : IProductService
 {
-    public async Task<BaseResponse<PagingResponse<ProductDto>>> SearchAsync(SearchRequest request)
+    public async Task<BaseResponse<PagingResponse<ProductDto>>> SearchAsync(SearchRequest request, string? categoryId = null)
     {
         try
         {
-            var searchResponse = await productRepository.SearchAsync(request);
+            var searchResponse = await productRepository.SearchAsync(request, categoryId);
 
             var result = searchResponse.Adapt<PagingResponse<ProductDto>>();
 

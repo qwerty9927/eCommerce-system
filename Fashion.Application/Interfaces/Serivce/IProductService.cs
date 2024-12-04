@@ -6,7 +6,7 @@ namespace Fashion.Application.Interfaces.Service;
 
 public interface IProductService
 {
-    Task<BaseResponse<PagingResponse<ProductDto>>> SearchAsync(SearchRequest request);
+    Task<BaseResponse<PagingResponse<ProductDto>>> SearchAsync(SearchRequest request, string? categoryId = null);
     Task<BaseResponse<ProductDto>> GetByIdAsync(string id);
     Task<BaseResponse<bool>> CreateAsync(CreateProduct request);
     Task<BaseResponse<bool>> UpdateAsync(UpdateProduct request);

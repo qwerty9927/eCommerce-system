@@ -1,17 +1,15 @@
 import Constant from "./constant.js";
 import {
     postApiAsync,
-    getApiAsync,
     putApiAsync,
     analyzeUrl,
+    getLocalStorage,
 } from "./helper.js";
 
-async function search(e, pageSize, pageIndex) {
-    // const productSpace = document.getElementById("product-space");
-    // const pagination = document.getElementById("pagination");
+async function search(e, pageSize, pageIndex, categoryId = "") {
     const searchValue = document.getElementById("search-input").value;
 
-    const url = `${Constant.UrlApi}api/product/search`;
+    const url = `${Constant.UrlApi}api/product/search?categoryId=${categoryId}`;
     try {
         const response = await postApiAsync(url, {
             keyWord: searchValue,
@@ -28,42 +26,6 @@ async function search(e, pageSize, pageIndex) {
         maxIndex = Math.ceil(response.data.totalRecord / pageSize);
 
         render(response.data.records, response.data.totalRecord, pageIndex);
-
-        // productSpace.innerHTML = response.data.records
-        //     .map((product) => {
-        //         return `
-        //             <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-        //                 <div class="block-4 text-center border">
-        //                     <figure class="block-4-image">
-        //                     <a href="shop-single.html"><img src="images/cloth_1.jpg" alt="Image placeholder" class="img-fluid"></a>
-        //                     </figure>
-        //                     <div class="block-4-text p-4">
-        //                         <h3><a href="shop-single.html">${
-        //                             product.productName
-        //                         }</a></h3>
-        //                         <p class="mb-0"></p>
-        //                         <p class="text-primary font-weight-bold">$${
-        //                             product?.sizes?.[0]?.price ?? 0.0
-        //                         }</p>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         `;
-        //     })
-        //     .join("");
-
-        // pagination.innerHTML = new Array(
-        //     Math.ceil(response.data.totalRecord / 10)
-        // )
-        //     .fill(null)
-        //     .map((item, index) => {
-        //         return `<li class="${
-        //             index == pageIndex ? "active" : ""
-        //         }"><span>${index + 1}</span></li>`;
-        //     })
-        //     .join("");
-
-        // paging();
     } catch (error) {
         console.error("An error occurred:", error);
     }
@@ -122,7 +84,18 @@ function paging() {
                 i.classList.remove("active");
             });
 
-            await search(e, 10, Number(item.textContent) - 1);
+            pageIndex = Number(item.textContent) - 1; // set page index
+
+            if (currentCategoryId) {
+                await search(
+                    e,
+                    10,
+                    Number(item.textContent) - 1,
+                    currentCategoryId
+                );
+            } else {
+                await search(e, 10, Number(item.textContent) - 1);
+            }
 
             // Add the 'active' class to the clicked list item
             item.classList.add("active");
@@ -164,27 +137,12 @@ function getCategory() {
 
     categories.forEach((c) => {
         c.onclick = async (e) => {
-            const url = `${Constant.UrlApi}api/category/${c.getAttribute(
-                "data"
-            )}`;
-            console.log(url);
+            pageIndex = 0; // reset index
 
-            try {
-                const response = await getApiAsync(url);
-                console.log(response.data.products);
+            const categoryId = c.getAttribute("data-categoryId");
+            currentCategoryId = categoryId;
 
-                if (!response.status) {
-                    return;
-                }
-
-                render(
-                    response.data.products,
-                    response.data.products.length,
-                    0
-                );
-            } catch (error) {
-                console.error("An error occurred:", error);
-            }
+            search(e, 10, 0, currentCategoryId);
         };
     });
 }
@@ -195,7 +153,6 @@ async function addToCart(id) {
         .getAttribute("data");
     const quantity = Number(document.getElementById("item-quantity").value);
 
-    console.log(quantity);
     const url = `${Constant.UrlApi}api/cart/add`;
     try {
         const response = await putApiAsync(url, {
@@ -214,10 +171,6 @@ async function addToCart(id) {
         console.error("An error occurred:", error);
     }
 }
-
-let pageIndex = 0;
-let products;
-let maxIndex = 2;
 
 function mainPage() {
     const searchInput = document.getElementById("search-input");
@@ -238,7 +191,7 @@ function mainPage() {
     backPageEle.onclick = async (e) => {
         if (pageIndex > 0) {
             pageIndex--;
-            await search(e, 10, pageIndex);
+            await search(e, 10, pageIndex, currentCategoryId);
         } else {
             console.log("Already on the first page.");
         }
@@ -247,7 +200,7 @@ function mainPage() {
     nextPageEle.onclick = async (e) => {
         if (pageIndex < maxIndex - 1) {
             pageIndex++;
-            await search(e, 10, pageIndex);
+            await search(e, 10, pageIndex, currentCategoryId);
         } else {
             console.log("Already on the last page.");
         }
@@ -266,11 +219,24 @@ function mainPage() {
 function subPage(id) {
     // Add to cart
     const addToCartBtn = document.getElementById("add-to-cart");
-
-    addToCartBtn.onclick = async (e) => await addToCart(id);
+    addToCartBtn.onclick = async (e) => {
+        if (isLogin) {
+            await addToCart(id);
+        } else {
+            alert("Please login before adding item!");
+        }
+    };
 }
 
+let pageIndex = 0;
+let products;
+let currentCategoryId;
+let maxIndex = 2;
+let isLogin = false;
+
 function shop() {
+    isLogin = !!getLocalStorage(Constant.Token);
+
     const path = analyzeUrl(window.location.href);
     if (path.route1) {
         subPage(path.route1);

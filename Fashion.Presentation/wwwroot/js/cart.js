@@ -1,7 +1,7 @@
 import Constant from "./constant.js";
 import { getApiAsync, putApiAsync } from "./helper.js";
 
-async function getCart() {
+async function getCartSummary() {
     const url = `${Constant.UrlApi}api/cart/summary`;
     try {
         const response = await getApiAsync(url);
@@ -23,8 +23,9 @@ function render(data) {
 
     const cartDetails = data.cartDetails;
 
-    cartItem.innerHTML = cartDetails.map((item) => {
-        return `<tr>
+    cartItem.innerHTML = cartDetails
+        .map((item) => {
+            return `<tr>
                     <td class="product-thumbnail">
                       <img src="images/cloth_2.jpg" alt="Image" class="img-fluid">
                     </td>
@@ -55,17 +56,10 @@ function render(data) {
                         item.id
                     }">X</a></td>
                   </tr>`;
-    });
+        })
+        .join("");
 
     cartTotal.innerHTML = `
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                      <span class="text-black">Subtotal</span>
-                    </div>
-                    <div class="col-md-6 text-right">
-                      <strong class="text-black">$${data.subTotal}.00</strong>
-                    </div>
-                  </div>
                   <div class="row mb-5">
                     <div class="col-md-6">
                       <span class="text-black">Total</span>
@@ -112,7 +106,7 @@ async function decreaseItem(e, cartDetailId, quantity) {
             return;
         }
 
-        await getCart();
+        await getCartSummary();
     } catch (error) {
         console.error("An error occurred:", error);
     }
@@ -132,14 +126,14 @@ async function increaseItem(e, productId, sizeId, quantity) {
             return;
         }
 
-        await getCart();
+        await getCartSummary();
     } catch (error) {
         console.error("An error occurred:", error);
     }
 }
 
 async function cart() {
-    await getCart();
+    await getCartSummary();
 }
 
 export default cart;

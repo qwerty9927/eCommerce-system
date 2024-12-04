@@ -252,8 +252,7 @@ public class CartService(
             }
 
             CartSummary result = foundCart.Adapt<CartSummary>();
-            result.SubTotal = (decimal)result.CartDetails.Sum(cd => cd.Size.Price * cd.Quantity);
-            result.Total = result.SubTotal - result.DiscountPrice;
+            result.Total = (decimal)result.CartDetails.Sum(cd => cd.Size.Price * cd.Quantity);
 
             return new SuccessResponse<CartSummary>(result);
 

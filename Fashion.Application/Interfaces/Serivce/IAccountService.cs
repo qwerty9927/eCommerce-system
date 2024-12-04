@@ -11,4 +11,5 @@ public interface IAccountService
     Task<BaseResponse<bool>> CreateAccountAsync(CreateAccount request);
     Task<BaseResponse<bool>> UpdateAsync(UpdateAccount request);
     Task<BaseResponse<bool>> DeleteAsync(string accountId);
+    Task<BaseResponse<AccountDto>> GetInfoAsync();
 }

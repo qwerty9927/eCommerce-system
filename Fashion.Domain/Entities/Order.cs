@@ -12,6 +12,8 @@
 
         public string UserId { get; set; }
 
+        public string? DeliveryInformationId { get; set; }
+
         public DeliveryInformation DeliveryInformation { get; set; }
 
         public List<OrderDetail> OrderDetails { get; set; }

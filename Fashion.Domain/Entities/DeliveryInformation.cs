@@ -10,6 +10,8 @@
 
         public string PhoneNumber { get; set; }
 
+        public bool IsDefault { get; set; }
+
         public string UserId { get; set; }
     }
 }
