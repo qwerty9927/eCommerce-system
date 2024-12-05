@@ -32,7 +32,7 @@ function render(data) {
                     <td>$${(item.quantity * item.size.price).toFixed(2)}</td>
                 </tr>`;
             })
-            .join("") + // Combine all rows into a single string
+            .join("") +
         `<tr>
             <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
             <td class="text-black">$${data.total.toFixed(2)}</td>
@@ -45,6 +45,51 @@ function render(data) {
         </tr>`;
 }
 
+function validateDeliveryInfo() {
+    const fName = document.getElementById("c_fname").value.trim();
+    const LName = document.getElementById("c_lname").value.trim();
+    const address = document.getElementById("c_address").value.trim();
+    const phone = document.getElementById("c_phone").value.trim();
+
+    // Clear previous error messages
+    document
+        .querySelectorAll(".error-message")
+        .forEach((error) => (error.textContent = ""));
+
+    let isValid = true;
+
+    // Validate First Name
+    if (!fName) {
+        document.getElementById("error-fname").textContent =
+            "First name is required.";
+        isValid = false;
+    }
+
+    // Validate Last Name
+    if (!LName) {
+        document.getElementById("error-lname").textContent =
+            "Last name is required.";
+        isValid = false;
+    }
+
+    // Validate Address
+    if (!address) {
+        document.getElementById("error-address").textContent =
+            "Address is required.";
+        isValid = false;
+    }
+
+    // Validate Phone
+    const phonePattern = /^[0-9]{10,15}$/; // Validate phone number (10-15 digits)
+    if (!phone || !phonePattern.test(phone)) {
+        document.getElementById("error-phone").textContent =
+            "Enter a valid phone number.";
+        isValid = false;
+    }
+
+    return isValid;
+}
+
 async function stripeComponent(publicKey) {
     const stripe = Stripe(publicKey);
     const elements = stripe.elements();
@@ -54,6 +99,10 @@ async function stripeComponent(publicKey) {
     const placeOrderEle = document.getElementById("place-order");
     placeOrderEle.addEventListener("click", async (event) => {
         event.preventDefault();
+        if (!validateDeliveryInfo()) {
+            return;
+        }
+
         const cardErrors = document.getElementById("card-errors");
         const { source, error } = await stripe.createSource(cardElement, {
             type: "card",
@@ -63,16 +112,28 @@ async function stripeComponent(publicKey) {
             cardErrors.textContent = error.message;
         } else {
             console.log("Source created:", source);
-            await mockup(source.id);
+            await mockup({
+                sourceId: source.id,
+                deliveryInformation: {
+                    firstName: document.getElementById("c_fname").value.trim(),
+                    lastName: document.getElementById("c_lname").value.trim(),
+                    AddressDetail: document
+                        .getElementById("c_address")
+                        .value.trim(),
+                    phoneNumber: document
+                        .getElementById("c_phone")
+                        .value.trim(),
+                },
+            });
             window.location.href = "/home/thankyou";
         }
     });
 }
 
-async function mockup(sourceId) {
+async function mockup(data) {
     const url = `${Constant.UrlApi}api/order/mock-up`;
     try {
-        const response = await postApiAsync(url, sourceId);
+        const response = await postApiAsync(url, data);
         console.log(response);
 
         if (!response.status) {

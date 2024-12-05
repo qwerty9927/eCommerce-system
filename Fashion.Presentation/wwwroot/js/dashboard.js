@@ -75,6 +75,14 @@ async function getMyOrder() {
                         </div>
                     </td>
                     <td class="align-middle">${d.id}</td>
+                    <td class="align-middle">${new Date(
+                        d.createdAt
+                    ).toLocaleString("en-US", { timeZone: "UTC" })}</td>
+                    <td class="align-middle">${new Date(
+                        d.updatedAt
+                    ).toLocaleString("en-US", {
+                        timeZone: "UTC",
+                    })}</td>
                     <td class="align-middle">$${d.total.toFixed(2)}</td>
                     <td class="align-middle">
                         <span class="badge">Visa</span>

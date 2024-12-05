@@ -27,7 +27,9 @@ function render(data) {
         .map((item) => {
             return `<tr>
                     <td class="product-thumbnail">
-                      <img src="images/cloth_2.jpg" alt="Image" class="img-fluid">
+                      <img src="${
+                          item.product.urlImage
+                      }" alt="Image" class="img-fluid">
                     </td>
                     <td class="product-name">
                       <h2 class="h5 text-black">${item.product.productName}</h2>

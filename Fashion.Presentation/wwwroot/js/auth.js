@@ -135,6 +135,10 @@ async function getUserInfo() {
 }
 
 async function getMyOrder() {
+    const colorPicker = {
+        pending: "bg-primary",
+        succeed: "bg-success",
+    };
     const myOrder = document.getElementById("my-order");
     const url = `${Constant.UrlApi}api/order/my-order`;
     try {
@@ -152,11 +156,17 @@ async function getMyOrder() {
                 return `
                 <tr>
                     <th scope="col">${d.id}</th>
+                    <td>${new Date(d.createdAt).toLocaleString("en-US", {
+                        timeZone: "UTC",
+                    })}</td>
+                    <td>${new Date(d.updatedAt).toLocaleString("en-US", {
+                        timeZone: "UTC",
+                    })}</td>
                     <td>$${d.total.toFixed(2)}</td>
                     <td>Visa</td>
-                    <td><span class="dot dot-lg bg-warning mr-2"></span>${
-                        d.status
-                    }</td>
+                    <td><span class="dot dot-lg ${
+                        colorPicker[d.status.toLowerCase()]
+                    } mr-2"></span>${d.status}</td>
                 </tr>`;
             })
             .join("");

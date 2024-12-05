@@ -37,14 +37,13 @@ function render(data, totalRecord, pageIndex) {
 
     productSpace.innerHTML = data
         .map((product) => {
-            console.log(data);
             return `
                     <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                         <div class="block-4 text-center border">
                             <figure class="block-4-image">
-                            <a href="shop/${
-                                product.id
-                            }"><img src="images/cloth_1.jpg" alt="Image placeholder" class="img-fluid"></a>
+                            <a href="shop/${product.id}"><img src="${
+                product.urlImage
+            }" alt="Image placeholder" class="img-fluid" style="width: 250px; height: 250px;"></a>
                             </figure>
                             <div class="block-4-text p-4">
                                 <h3><a href="shop/${product.id}">
