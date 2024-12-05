@@ -15,6 +15,10 @@ public class OrderDto
 
     public string Status { get; set; }
 
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
     public DeliveryInformationDto DeliveryInformation { get; set; }
 
     public List<OrderDetailDto> OrderDetails { get; set; }

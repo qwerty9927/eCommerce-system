@@ -17,6 +17,7 @@ public class OrderService(
     UserManager<User> userManager,
     IStripeProvider stripeProvider,
     IPaymentProfileRepository paymentProfileRepository,
+    IDeliveryInformationRepository deliveryInformationRepository,
     ITransactionRepository transactionRepository,
     IOrderRepository orderRepository,
     ICartRepository cartRepository,
@@ -212,6 +213,7 @@ public class OrderService(
             var paymentInfo = await stripeProvider.ConfirmPaymentAsync(foundTransaction.PaymentId);
 
             foundOrder.Status = OrderStatusConstant.Succeed;
+            foundOrder.UpdatedAt = DateTime.Now;
             await orderRepository.UpdateAsync(foundOrder);
 
             return new SuccessResponse<bool>(true);
@@ -255,6 +257,8 @@ public class OrderService(
             }).ToList();
             newOrder.Status = OrderStatusConstant.Pending.ToString();
             newOrder.Total = (decimal)newOrder.OrderDetails.Sum(cd => cd.ProductPrice * cd.Quantity);
+            newOrder.CreatedAt = DateTime.Now;
+            newOrder.UpdatedAt = DateTime.Now;
 
             var isCreated = await orderRepository.CreateAsync(newOrder);
             if (!isCreated)
@@ -302,7 +306,7 @@ public class OrderService(
         }
     }
 
-    public async Task<BaseResponse<bool>> PaymentMockupAsync(string sourceId)
+    public async Task<BaseResponse<bool>> PaymentMockupAsync(MockupRequest request)
     {
         try
         {
@@ -314,11 +318,17 @@ public class OrderService(
             }
 
             // Add card
-            var isAddCard = (await AddCardAsync(sourceId)).Data;
+            var isAddCard = (await AddCardAsync(request.SourceId)).Data;
             if (!isAddCard)
             {
                 throw new BaseException();
             }
+
+            // var isCreateDeliveryInfo = await deliveryInformationRepository.CreateAsync(request.Adapt<DeliveryInformation>());
+            // if (!isCreateDeliveryInfo)
+            // {
+            //     throw new BaseException();
+            // }
 
             // Place other
             var isPlacedOrder = (await PlaceOrderAsync()).Data;

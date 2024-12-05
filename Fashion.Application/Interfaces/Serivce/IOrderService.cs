@@ -10,7 +10,7 @@ public interface IOrderService
     Task<BaseResponse<bool>> CreatePaymentAsync(int amount, string orderId);
     Task<BaseResponse<bool>> ConfirmPaymentAsync(string orderId);
     Task<BaseResponse<bool>> PlaceOrderAsync();
-    Task<BaseResponse<bool>> PaymentMockupAsync(string sourceId);
+    Task<BaseResponse<bool>> PaymentMockupAsync(MockupRequest request);
     Task<BaseResponse<List<OrderDto>>> GetMyOrderAsync();
     Task<BaseResponse<List<OrderDto>>> GetAllAsync();
 }

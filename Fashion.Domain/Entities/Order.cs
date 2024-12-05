@@ -14,6 +14,10 @@
 
         public string? DeliveryInformationId { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
         public DeliveryInformation DeliveryInformation { get; set; }
 
         public List<OrderDetail> OrderDetails { get; set; }

@@ -1,3 +1,4 @@
+using Fashion.Application.Dtos.Order;
 using Fashion.Application.Interfaces.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,9 +52,9 @@ public class OrderController(
     }
 
     [HttpPost("mock-up")]
-    public async Task<IActionResult> PaymentMockupAsync([FromBody] string sourceId)
+    public async Task<IActionResult> PaymentMockupAsync(MockupRequest request)
     {
-        var result = await orderService.PaymentMockupAsync(sourceId);
+        var result = await orderService.PaymentMockupAsync(request);
 
         return Ok(result);
     }

@@ -20,6 +20,7 @@ public class OrderRepository(ApplicationDbContext context) : RepositoryAsync<Ord
         return await Table.Where(o => isAdmin || o.UserId == userId)
                                 .Include(o => o.OrderDetails)
                                 .ThenInclude(od => od.Product)
+                                .OrderByDescending(o => o.CreatedAt)
                                 .ToListAsync();
     }
 }
