@@ -6,5 +6,5 @@ namespace Fashion.Application.Interfaces.Repository;
 
 public interface IProductRepository : IRepositoryAsync<Product>
 {
-    Task<PagingResponse<Product>> SearchAsync(SearchRequest request);
+    Task<PagingResponse<Product>> SearchAsync(SearchRequest request, string? categoryId = null);
 }

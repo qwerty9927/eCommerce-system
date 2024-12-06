@@ -1,26 +1,39 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Fashion.Presentation.Models;
+using Fashion.Application.Interfaces.Service;
+using Fashion.Domain.Shared;
+using Mapster;
 
 namespace Fashion.Presentation.Controllers;
 
-public class ShopController : Controller
+public class ShopController(
+    ICategoryService categoryService,
+    IProductService productService
+) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public ShopController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index()
     {
-        _logger = logger;
-    }
+        var productPaging = await productService.SearchAsync(new SearchRequest
+        {
+            PageSize = 10
+        });
 
-    public IActionResult Index()
-    {
+        var categories = await categoryService.GetAllAsync();
+
+        ViewBag.ProductPaging = productPaging.Data.Adapt<PagingResponseModel<ProductModel>>();
+        ViewBag.Categories = categories.Data.Adapt<List<CategoryModel>>();
+
         return View();
     }
 
     [HttpGet("shop/{id}")]
-    public IActionResult Detail(int id)
+    public async Task<IActionResult> Detail(string id)
     {
+        var product = await productService.GetByIdAsync(id);
+
+        ViewBag.Product = product.Data.Adapt<ProductModel>();
+
         return View();
     }
 

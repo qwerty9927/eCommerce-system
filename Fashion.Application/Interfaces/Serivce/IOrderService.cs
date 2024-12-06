@@ -1,3 +1,4 @@
+using Fashion.Application.Dtos.Order;
 using Fashion.Domain.Shared;
 
 namespace Fashion.Application.Interfaces.Service;
@@ -6,7 +7,10 @@ public interface IOrderService
 {
     Task<BaseResponse<bool>> CreateCustomerAsync();
     Task<BaseResponse<bool>> AddCardAsync(string source);
-    Task<BaseResponse<string>> CreatePaymentAsync();
-    Task<BaseResponse<bool>> ConfirmPaymentAsync(string paymentId);
+    Task<BaseResponse<bool>> CreatePaymentAsync(int amount, string orderId);
+    Task<BaseResponse<bool>> ConfirmPaymentAsync(string orderId);
     Task<BaseResponse<bool>> PlaceOrderAsync();
+    Task<BaseResponse<bool>> PaymentMockupAsync(MockupRequest request);
+    Task<BaseResponse<List<OrderDto>>> GetMyOrderAsync();
+    Task<BaseResponse<List<OrderDto>>> GetAllAsync();
 }

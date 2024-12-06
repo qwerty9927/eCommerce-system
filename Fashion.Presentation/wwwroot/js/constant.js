@@ -1,6 +1,8 @@
 const Constant = {
     Token: "accessToken",
-    Uri: "http://localhost:5284/",
+    IsAdmin: "isAdmin",
+    Url: "http://localhost:5199/",
+    UrlApi: "http://localhost:5284/",
 };
 
 export default Constant;

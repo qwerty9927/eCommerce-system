@@ -175,7 +175,8 @@ a:hover {
   background: #fff;
   margin-bottom: 0px;
   z-index: 1999;
-  position: relative;
+  position: fixed;
+  width: 100%;
 }
 .site-navbar.transparent {
   background: transparent;

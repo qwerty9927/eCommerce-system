@@ -12,9 +12,9 @@ namespace Fashion.API.Controllers;
 public class ProductController(IProductService productService) : ControllerBase
 {
     [HttpPost("search")]
-    public async Task<IActionResult> SearchAsync(SearchRequest request)
+    public async Task<IActionResult> SearchAsync(SearchRequest request, string? categoryId)
     {
-        var result = await productService.SearchAsync(request);
+        var result = await productService.SearchAsync(request, categoryId);
 
         return Ok(result);
     }

@@ -36,11 +36,11 @@ public class StripeProvider : IStripeProvider
         return result.Id;
     }
 
-    public async Task<PaymentIntent> CreatePaymentAsync(string customerId)
+    public async Task<PaymentIntent> CreatePaymentAsync(string customerId, int amount)
     {
         var options = new PaymentIntentCreateOptions
         {
-            Amount = 2000,
+            Amount = amount,
             Currency = "usd",
             AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions
             {

@@ -4,5 +4,6 @@ namespace Fashion.Domain.Entities
     {
         public string PaymentId { get; set; }
         public string Status { get; set; }
+        public string OrderId { get; set; }
     }
 }

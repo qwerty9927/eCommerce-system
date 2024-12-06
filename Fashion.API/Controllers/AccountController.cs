@@ -10,6 +10,15 @@ namespace Fashion.API.Controllers;
 [ApiController]
 public class AccountController(IAccountService accountService) : ControllerBase
 {
+    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.User}")]
+    [HttpGet]
+    public async Task<IActionResult> GetInfoAsync()
+    {
+        var result = await accountService.GetInfoAsync();
+
+        return Ok(result);
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> RegisterAsync(RegisterAccount request)
     {
@@ -19,15 +28,15 @@ public class AccountController(IAccountService accountService) : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(string email, string password)
+    public async Task<IActionResult> LoginAsync(LoginAccount request)
     {
-        var result = await accountService.LoginAsync(email, password);
+        var result = await accountService.LoginAsync(request);
 
         return Ok(result);
     }
 
     [Authorize(Roles = RoleConstant.Admin)]
-    [HttpPost("role/create")]
+    [HttpPost("role")]
     public async Task<IActionResult> CreateRoleAsync(string roleName)
     {
         var result = await accountService.CreateRoleAsync(roleName);

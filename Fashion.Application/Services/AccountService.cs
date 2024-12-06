@@ -7,6 +7,7 @@ using Fashion.Application.Interfaces.Service;
 using Fashion.Domain.Constants;
 using Fashion.Domain.Entities;
 using Fashion.Domain.Shared;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -20,10 +21,47 @@ public class AccountService(
     IOptions<JwtSettings> options,
     IHttpContextAccessor httpContextAccessor) : IAccountService
 {
+    public async Task<BaseResponse<AccountDto>> GetInfoAsync()
+    {
+        try
+        {
+            var email = httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Email).Value;
+
+            var foundUser = await userManager.FindByEmailAsync(email);
+            if (foundUser == null)
+            {
+                throw new BaseException
+                {
+                    Message = "Account not exist"
+                };
+            }
+
+            var result = foundUser.Adapt<AccountDto>();
+
+            return new SuccessResponse<AccountDto>(result);
+        }
+        catch (BaseException ex)
+        {
+            return new BadResponse<AccountDto>(default)
+            {
+                Code = ex.Code ?? (int)HttpStatusCode.BadRequest,
+                Message = ex.Message ?? "Get failed"
+            };
+        }
+    }
     public async Task<BaseResponse<bool>> RegisterAsync(RegisterAccount request)
     {
         try
         {
+            var foundUser = await userManager.FindByEmailAsync(request.Email);
+            if (foundUser != null)
+            {
+                throw new BaseException
+                {
+                    Message = "Account was existed"
+                };
+            }
+
             User user = new User
             {
                 Id = Guid.NewGuid().ToString(),
@@ -53,29 +91,38 @@ public class AccountService(
         }
     }
 
-    public async Task<BaseResponse<object>> LoginAsync(string email, string password)
+    public async Task<BaseResponse<object>> LoginAsync(LoginAccount request)
     {
         try
         {
-            var result = await signInManager.PasswordSignInAsync(email, password, isPersistent: false, lockoutOnFailure: false);
+            var result = await signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
             {
                 throw new BaseException();
             }
 
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByEmailAsync(request.Email);
             var roles = (await userManager.GetRolesAsync(user)).ToList();
 
             var token = Security.GenerateJwtToken(user, roles, options.Value.Key);
 
-            return new SuccessResponse<object>(new { token });
+            var isAdmin = roles.Any(r => r == RoleConstant.Admin);
+
+            return new SuccessResponse<object>(new { token, isAdmin });
         }
         catch (BaseException ex)
         {
             return new BadResponse<object>(default)
             {
                 Code = ex.Code ?? (int)HttpStatusCode.Unauthorized,
+                Message = ex.Message ?? "Login failed"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BadResponse<object>(default)
+            {
                 Message = ex.Message ?? "Login failed"
             };
         }

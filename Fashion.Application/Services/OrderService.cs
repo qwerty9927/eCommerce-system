@@ -1,5 +1,6 @@
 using System.Net;
 using Fashion.Application.Configurations;
+using Fashion.Application.Dtos.Order;
 using Fashion.Application.Interfaces.Repository;
 using Fashion.Application.Interfaces.Service;
 using Fashion.Domain.Constants;
@@ -9,7 +10,6 @@ using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Stripe;
 
 namespace Fashion.Application.Service;
 
@@ -17,6 +17,7 @@ public class OrderService(
     UserManager<User> userManager,
     IStripeProvider stripeProvider,
     IPaymentProfileRepository paymentProfileRepository,
+    IDeliveryInformationRepository deliveryInformationRepository,
     ITransactionRepository transactionRepository,
     IOrderRepository orderRepository,
     ICartRepository cartRepository,
@@ -93,7 +94,7 @@ public class OrderService(
             {
                 throw new BaseException
                 {
-                    Message = "Payment needed to be created",
+                    Message = "User payment needed to be created",
                 };
             }
 
@@ -119,7 +120,7 @@ public class OrderService(
         }
     }
 
-    public async Task<BaseResponse<string>> CreatePaymentAsync()
+    public async Task<BaseResponse<bool>> CreatePaymentAsync(int amount, string orderId)
     {
         try
         {
@@ -144,18 +145,25 @@ public class OrderService(
                 };
             }
 
-            var paymentInfo = await stripeProvider.CreatePaymentAsync(foundUser.UserPaymentId);
+            var paymentInfo = await stripeProvider.CreatePaymentAsync(foundUser.UserPaymentId, amount);
 
-            // await transactionRepository.CreateAsync(new Transaction{
-            //     PaymentId = paymentInfo.Id,
-            //     Status = paymentInfo.Status
-            // });
+            var isCreatedTransaction = await transactionRepository.CreateAsync(new Transaction
+            {
+                PaymentId = paymentInfo.Id,
+                Status = paymentInfo.Status,
+                OrderId = orderId
+            });
 
-            return new SuccessResponse<string>(paymentInfo.Id);
+            if (!isCreatedTransaction)
+            {
+                throw new BaseException();
+            }
+
+            return new SuccessResponse<bool>(true);
         }
         catch (BaseException ex)
         {
-            return new BadResponse<string>(default)
+            return new BadResponse<bool>(false)
             {
                 Code = ex.Code ?? (int)HttpStatusCode.BadRequest,
                 Message = ex.Message ?? "Create failed"
@@ -163,13 +171,21 @@ public class OrderService(
         }
     }
 
-    public async Task<BaseResponse<bool>> ConfirmPaymentAsync(string paymentId)
+    public async Task<BaseResponse<bool>> ConfirmPaymentAsync(string orderId)
     {
         try
         {
-            string userId = httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == ClaimTypesExtension.UserId).Value;
+            var foundOrder = await orderRepository.GetByIdAsync(orderId);
+            if (foundOrder == null)
+            {
+                throw new BaseException
+                {
+                    Message = "Order not found",
+                    Code = (int)HttpStatusCode.NotFound
+                };
+            }
 
-            var foundUser = await userManager.FindByIdAsync(userId);
+            var foundUser = await userManager.FindByIdAsync(foundOrder.UserId);
 
             if (foundUser == null)
             {
@@ -188,7 +204,17 @@ public class OrderService(
                 };
             }
 
-            var paymentInfo = await stripeProvider.ConfirmPaymentAsync(paymentId);
+            var foundTransaction = await transactionRepository.GetByOrderId(orderId);
+            if (foundTransaction == null)
+            {
+                throw new BaseException();
+            }
+
+            var paymentInfo = await stripeProvider.ConfirmPaymentAsync(foundTransaction.PaymentId);
+
+            foundOrder.Status = OrderStatusConstant.Succeed;
+            foundOrder.UpdatedAt = DateTime.Now;
+            await orderRepository.UpdateAsync(foundOrder);
 
             return new SuccessResponse<bool>(true);
         }
@@ -218,9 +244,21 @@ public class OrderService(
                 };
             }
 
-            Order newOrder = foundCart.Adapt<Order>();
-            newOrder.Status = OrderStatusConstant.Created.ToString();
+            // Covert to order
+            Order newOrder = new();
+            newOrder.Id = Guid.NewGuid().ToString();
+            newOrder.UserId = userId;
+            newOrder.OrderDetails = foundCart.CartDetails.Select(c => new OrderDetail
+            {
+                ProductId = c.ProductId,
+                Quantity = c.Quantity,
+                OrderId = newOrder.Id,
+                ProductPrice = c.Size.Price
+            }).ToList();
+            newOrder.Status = OrderStatusConstant.Pending.ToString();
             newOrder.Total = (decimal)newOrder.OrderDetails.Sum(cd => cd.ProductPrice * cd.Quantity);
+            newOrder.CreatedAt = DateTime.Now;
+            newOrder.UpdatedAt = DateTime.Now;
 
             var isCreated = await orderRepository.CreateAsync(newOrder);
             if (!isCreated)
@@ -228,10 +266,30 @@ public class OrderService(
                 throw new BaseException();
             }
 
+            // Close cart
             foundCart.IsActive = false;
             var isUpdated = await cartRepository.UpdateAsync(foundCart);
 
             if (!isUpdated)
+            {
+                throw new BaseException();
+            }
+
+            // Create payment
+            var isCreatedPayment = (await CreatePaymentAsync((int)newOrder.Total, newOrder.Id)).Data;
+            if (!isCreatedPayment)
+            {
+                throw new BaseException();
+            }
+
+            // Init new cart
+            var isCreatedNewCart = await cartRepository.CreateAsync(new Cart
+            {
+                UserId = userId,
+                IsActive = true
+            });
+
+            if (!isCreatedNewCart)
             {
                 throw new BaseException();
             }
@@ -244,6 +302,91 @@ public class OrderService(
             {
                 Code = ex.Code ?? (int)HttpStatusCode.BadRequest,
                 Message = ex.Message ?? "Convert failed"
+            };
+        }
+    }
+
+    public async Task<BaseResponse<bool>> PaymentMockupAsync(MockupRequest request)
+    {
+        try
+        {
+            // Create customer stripe
+            var isCreatedCustomer = (await CreateCustomerAsync()).Data;
+            if (!isCreatedCustomer)
+            {
+                throw new BaseException();
+            }
+
+            // Add card
+            var isAddCard = (await AddCardAsync(request.SourceId)).Data;
+            if (!isAddCard)
+            {
+                throw new BaseException();
+            }
+
+            // var isCreateDeliveryInfo = await deliveryInformationRepository.CreateAsync(request.Adapt<DeliveryInformation>());
+            // if (!isCreateDeliveryInfo)
+            // {
+            //     throw new BaseException();
+            // }
+
+            // Place other
+            var isPlacedOrder = (await PlaceOrderAsync()).Data;
+            if (!isPlacedOrder)
+            {
+                throw new BaseException();
+            }
+
+            return new SuccessResponse<bool>(true);
+        }
+        catch (BaseException ex)
+        {
+            return new BadResponse<bool>(false)
+            {
+                Code = ex.Code ?? (int)HttpStatusCode.BadRequest,
+                Message = ex.Message ?? "Mockup failed"
+            };
+        }
+    }
+
+    public async Task<BaseResponse<List<OrderDto>>> GetMyOrderAsync()
+    {
+        try
+        {
+            string userId = httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == ClaimTypesExtension.UserId).Value;
+
+            var foundOrders = await orderRepository.GetAllAsync(userId);
+
+            var result = foundOrders.Adapt<List<OrderDto>>();
+
+            return new SuccessResponse<List<OrderDto>>(result);
+        }
+        catch (BaseException ex)
+        {
+            return new BadResponse<List<OrderDto>>(default)
+            {
+                Code = ex.Code ?? (int)HttpStatusCode.BadRequest,
+                Message = ex.Message ?? "Get failed"
+            };
+        }
+    }
+
+    public async Task<BaseResponse<List<OrderDto>>> GetAllAsync()
+    {
+        try
+        {
+            var foundOrders = await orderRepository.GetAllAsync(null, true);
+
+            var result = foundOrders.Adapt<List<OrderDto>>();
+
+            return new SuccessResponse<List<OrderDto>>(result);
+        }
+        catch (BaseException ex)
+        {
+            return new BadResponse<List<OrderDto>>(default)
+            {
+                Code = ex.Code ?? (int)HttpStatusCode.BadRequest,
+                Message = ex.Message ?? "Get failed"
             };
         }
     }

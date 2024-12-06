@@ -5,7 +5,7 @@ namespace Fashion.Domain.Entities
     {
         public ICollection<Order>? Orders { get; set; }
 
-        public Cart Cart { get; set; }
+        public List<Cart> Carts { get; set; }
 
         public string FullName { get; set; } = string.Empty;
 

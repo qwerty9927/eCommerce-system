@@ -1,10 +1,17 @@
 using Fashion.Infrastructure;
 using Fashion.Application;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+// .AddJsonOptions(options =>
+//     {
+//         // Configure System.Text.Json options if needed
+//         // options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; // Example: CamelCase property names
+//         // options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Example: to handle Enum as strings
+//     });
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -24,6 +31,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+// app.MapControllerRoute(
+//     name: "admin",
+//     pattern: "Admin/{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
