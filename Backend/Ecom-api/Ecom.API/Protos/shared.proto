@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option csharp_namespace = "Ecom.API.Protos";
+
+package shared;
+
+message IdRequest {
+  string id = 1;
+}

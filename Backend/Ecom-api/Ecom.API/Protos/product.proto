@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option csharp_namespace = "Ecom.API.Protos";
+import "Protos/shared.proto";
+
+package product;
+
+service Product {
+  rpc GetByIdAsync (shared.IdRequest) returns (shared.IdRequest);
+}

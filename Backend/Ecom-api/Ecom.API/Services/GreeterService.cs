@@ -1,3 +1,4 @@
+using Ecom.API.Protos;
 using Grpc.Core;
 
 namespace Ecom.API.Services;
