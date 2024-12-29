@@ -21,7 +21,7 @@ namespace Ecom.Infrastructure.Data.Repositories
             return await Table.AsNoTracking().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(string id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
             return await Table.AsNoTracking().FirstAsync(x => x.Id == id);
         }

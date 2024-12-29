@@ -6,6 +6,8 @@
 
         public string CategoryDescription { get; set; } = string.Empty;
 
-        public string ParentId { get; set; }
+        public Guid? ParentId { get; set; }
+
+        public List<CategoryProduct> CategoryProducts { get; set; }
     }
 }

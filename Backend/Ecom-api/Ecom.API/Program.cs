@@ -1,4 +1,4 @@
-using Ecom.API.Services;
+using Ecom.API.Controllers;
 using Ecom.Infrastructure;
 using Ecom.Application;
 

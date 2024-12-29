@@ -2,8 +2,8 @@ namespace Ecom.Domain.Entities
 {
     public class Cart : BaseEntity
     {
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
-        public List<CartDetail> CartDetails { get; set; } = [];
+        public List<CartDetail> CartDetails { get; set; }
     }
 }

@@ -12,7 +12,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<OptionInSet> OptionInSets { get; set; }
     public DbSet<OptionSet> OptionSets { get; set; }
     public DbSet<Product> Products { get; set; }
-    public DbSet<ProductCategory> ProductCategories { get; set; }
+    public DbSet<CategoryProduct> ProductCategories { get; set; }
     public DbSet<ProductOptionSet> ProductOptionSets { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }

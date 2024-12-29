@@ -1,7 +1,7 @@
 using Ecom.API.Protos;
 using Grpc.Core;
 
-namespace Ecom.API.Services;
+namespace Ecom.API.Controllers;
 
 public class GreeterService : Greeter.GreeterBase
 {
