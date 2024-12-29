@@ -6,5 +6,6 @@ import "Protos/shared.proto";
 package product;
 
 service Product {
+  rpc SearchAsync (shared.SearchRequest) returns (shared.BaseResponse);
   rpc GetByIdAsync (shared.IdRequest) returns (shared.IdRequest);
 }
