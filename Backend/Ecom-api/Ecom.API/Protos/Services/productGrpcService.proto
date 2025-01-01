@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option csharp_namespace = "Ecom.API.Protos.Services";
+import "Protos/shared.proto";
+import "Protos/Dtos/product.proto";
+
+package productGrpcService;
+
+service ProductGrpc {
+  rpc SearchAsync (shared.SearchRequest) returns (shared.GrpcResponse);
+  rpc GetByIdAsync (shared.IdRequest) returns (shared.GrpcResponse);
+}

@@ -15,19 +15,19 @@ public class ProductRepository(ApplicationDbContext context) : RepositoryAsync<P
             .Skip(request.PageIndex * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync();
-    
+
         int total = await Table.Where(p => p.ProductName.Contains(keyWord)
                                            && !p.IsDeleted)
             .CountAsync();
-    
+
         return new PagingResponse<Product>
         {
             Records = products,
             TotalRecord = total
         };
     }
-    
-    public new async Task<Product> GetByIdAsync(Guid id)
+
+    public new async Task<Product> GetByIdAsync(string id)
     {
         Product? product = await Table.Where(p => p.Id == id)
             .Include(p => p.ProductOptionSets)

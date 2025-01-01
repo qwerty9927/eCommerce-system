@@ -4,7 +4,7 @@ namespace Ecom.Domain.Entities
     {
         public string Name { get; set; }
 
-        public Guid? ParentId { get; set; }
+        public string? ParentId { get; set; }
 
         public string DisplayType { get; set; }
 

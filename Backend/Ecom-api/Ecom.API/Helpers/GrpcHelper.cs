@@ -9,7 +9,7 @@ public static class GrpcHelper
 {
     public static TK TypeConverting<T, TK>(T source) where TK : new()
     {
-        var target = new TK();
+        TK target = new TK();
 
         foreach (var sourceProp in typeof(T).GetProperties())
         {
@@ -19,15 +19,23 @@ public static class GrpcHelper
             if (targetProp == null || sourceValue == null) continue;
             if (targetProp.PropertyType == typeof(Any))
             {
-                var test = Type.GetType(sourceProp.PropertyType.FullName!);
-                var instance = Activator.CreateInstance(Type.GetType(sourceProp.PropertyType.ToString())!);
-                targetProp.SetValue(target, Any.Pack((IMessage)instance.Adapt(sourceValue)));
+                var typeName = sourceProp.PropertyType?.Name.Split("`")[0]!;
+                var type = Type.GetType("Ecom.API.Protos.Dtos.Product.ProductGrpcDto")!;
+                dynamic instance = Activator.CreateInstance(type)!;
+                dynamic test2 = Adapt(sourceValue, instance);
+                dynamic test = instance.Adapt(sourceValue);
+                targetProp.SetValue(target, Any.Pack((IMessage)instance));
                 continue;
             }
 
             targetProp.SetValue(target, sourceValue);
         }
 
+        return target;
+    }
+
+    private static TK Adapt<T,TK>(T source, TK target)
+    {
         return target;
     }
 }

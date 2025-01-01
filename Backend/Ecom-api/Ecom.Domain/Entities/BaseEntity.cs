@@ -7,7 +7,7 @@ public class BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
+    public string Id { get; set; }
 
     public bool IsDeleted { get; set; }
 

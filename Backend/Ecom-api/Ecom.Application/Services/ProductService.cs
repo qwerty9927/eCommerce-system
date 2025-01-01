@@ -17,4 +17,11 @@ public class ProductService(IProductRepository productRepository) : IProductServ
 
         return new SuccessResponse<PagingResponse<ProductDto>>(result);
     }
+
+    public async Task<BaseResponse<ProductDto>> GetByIdAsync(string productId)
+    {
+        Product result = await productRepository.GetByIdAsync(productId);
+
+        return new SuccessResponse<ProductDto>(result.Adapt<ProductDto>());
+    }
 }

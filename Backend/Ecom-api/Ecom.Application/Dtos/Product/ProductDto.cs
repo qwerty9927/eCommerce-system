@@ -6,5 +6,5 @@ public class ProductDto
 
     public string ProductName { get; set; } = string.Empty;
 
-    public string URLImage { get; set; } = string.Empty;
+    public string UrlImage { get; set; } = string.Empty;
 }

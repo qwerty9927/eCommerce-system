@@ -5,7 +5,7 @@ using Ecom.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add Services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
 builder.Services.AddInfrastructure(builder.Configuration);

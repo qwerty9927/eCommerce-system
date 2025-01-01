@@ -2,10 +2,10 @@ namespace Ecom.Domain.Entities
 {
     public class OptionInSet : BaseEntity
     {
-        public Guid OptionSetId { get; set; }
+        public string OptionSetId { get; set; }
 
         public string OptionId { get; set; }
-        
+
         public Option Option { get; set; }
 
         public string OptionHash { get; set; }
