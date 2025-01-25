@@ -7,21 +7,27 @@ using Mapster;
 
 namespace Ecom.Application.Services;
 
-public class ProductService(IProductRepository productRepository) : IProductService
+public class ProductService(IProductRepository _productRepository) : IProductService
 {
     public async Task<BaseResponse<PagingResponse<ProductDto>>> SearchAsync(SearchRequest request)
     {
-        PagingResponse<Product> searchResponse = await productRepository.SearchAsync(request);
+        PagingResponse<Product> result = await _productRepository.SearchAsync(request);
 
-        PagingResponse<ProductDto> result = searchResponse.Adapt<PagingResponse<ProductDto>>();
-
-        return new SuccessResponse<PagingResponse<ProductDto>>(result);
+        return new SuccessResponse<PagingResponse<ProductDto>>(
+            result.Adapt<PagingResponse<ProductDto>>());
     }
 
     public async Task<BaseResponse<ProductDto>> GetByIdAsync(string productId)
     {
-        Product result = await productRepository.GetByIdAsync(productId);
+        Product result = await _productRepository.GetByIdAsync(productId);
 
         return new SuccessResponse<ProductDto>(result.Adapt<ProductDto>());
+    }
+
+    public async Task<BaseResponse<List<ProductDto>>> GetAllAsync()
+    {
+        List<Product> result = await _productRepository.GetAllAsync();
+
+        return new SuccessResponse<List<ProductDto>>(result.Adapt<List<ProductDto>>());
     }
 }

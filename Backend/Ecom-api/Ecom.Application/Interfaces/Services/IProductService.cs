@@ -8,4 +8,6 @@ public interface IProductService
     Task<BaseResponse<PagingResponse<ProductDto>>> SearchAsync(SearchRequest request);
 
     Task<BaseResponse<ProductDto>> GetByIdAsync(string productId);
+
+    Task<BaseResponse<List<ProductDto>>> GetAllAsync();
 }

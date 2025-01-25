@@ -1,7 +1,10 @@
 namespace Ecom.Domain.Shared;
 
-public class PagingResponse<T>
+public class PagingResponse { }
+
+public class PagingResponse<T> : PagingResponse
 {
-    public List<T> Records { get; set; } = [];
+    public new List<T> Records { get; set; } = [];
+
     public int TotalRecord { get; set; }
 }

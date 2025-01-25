@@ -1,30 +1,34 @@
+using System.Collections;
+using System.Reflection;
+using Ecom.API.Protos.Dtos;
+using Ecom.Domain.Shared;
 using Google.Protobuf;
+using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using Mapster;
-using Type = System.Type;
 
 namespace Ecom.API.Helpers;
 
 public static class GrpcHelper
 {
-    public static TK TypeConverting<T, TK>(T source) where TK : new()
+    public static TDestination ObjectTypeConverting<TSource, TDestination, TObjectDestination>(
+        TSource source)
+        where TDestination : new()
     {
-        TK target = new TK();
+        TDestination target = new TDestination();
+        PropertyInfo[] properties = source.GetType().GetProperties();
 
-        foreach (var sourceProp in typeof(T).GetProperties())
+        for (var i = 0; i < properties.Length; i++)
         {
-            var targetProp = typeof(TK).GetProperty(sourceProp.Name);
-            var sourceValue = sourceProp.GetValue(source);
+            var targetProp = target.GetType().GetProperty(properties[i].Name);
+            var sourceValue = properties[i].GetValue(source);
 
             if (targetProp == null || sourceValue == null) continue;
+
             if (targetProp.PropertyType == typeof(Any))
             {
-                var typeName = sourceProp.PropertyType?.Name.Split("`")[0]!;
-                var type = Type.GetType("Ecom.API.Protos.Dtos.Product.ProductGrpcDto")!;
-                dynamic instance = Activator.CreateInstance(type)!;
-                dynamic test2 = Adapt(sourceValue, instance);
-                dynamic test = instance.Adapt(sourceValue);
-                targetProp.SetValue(target, Any.Pack((IMessage)instance));
+                targetProp.SetValue(target,
+                    Any.Pack((IMessage)sourceValue.Adapt<TObjectDestination>()!));
                 continue;
             }
 
@@ -34,8 +38,83 @@ public static class GrpcHelper
         return target;
     }
 
-    private static TK Adapt<T,TK>(T source, TK target)
+    public static TDestination IterableTypeConverting<TSource, TDestination, TIterableDestination>(
+        TSource source)
+        where TDestination : new()
     {
+        TDestination target = new TDestination();
+        PropertyInfo[] properties = source.GetType().GetProperties();
+
+        for (var i = 0; i < properties.Length; i++)
+        {
+            var targetProp = target.GetType().GetProperty(properties[i].Name);
+            var sourceValue = properties[i].GetValue(source);
+
+            if (targetProp == null || sourceValue == null) continue;
+
+            if (targetProp.PropertyType == typeof(RepeatedField<Any>) && sourceValue is IList)
+            {
+                var messages = (RepeatedField<Any>)targetProp.GetValue(target)!;
+                var paramSourceData = (IList)sourceValue;
+                foreach (var item in paramSourceData)
+                {
+                    var packedMessage =
+                        Any.Pack((IMessage)item.Adapt<TIterableDestination>()!);
+                    messages.Add(packedMessage);
+                }
+
+                continue;
+            }
+
+            targetProp.SetValue(target, sourceValue);
+        }
+
+        return target;
+    }
+
+    public static TDestination PagingTypeConverting<TSource, TDestination, TIterableDestination>(
+        TSource source)
+        where TDestination : new()
+    {
+        TDestination target = new TDestination();
+        PropertyInfo[] properties = source.GetType().GetProperties();
+
+        for (var i = 0; i < properties.Length; i++)
+        {
+            var targetProp = target.GetType().GetProperty(properties[i].Name);
+            var sourceValue = properties[i].GetValue(source);
+
+            if (targetProp == null || sourceValue == null) continue;
+
+            if (targetProp.PropertyType == typeof(PagingGrpcResponse) &&
+                sourceValue is PagingResponse)
+            {
+                PagingGrpcResponse paging =
+                    IterableTypeConverting<PagingResponse, PagingGrpcResponse,
+                        TIterableDestination>((PagingResponse)sourceValue);
+
+                targetProp.SetValue(target, paging);
+
+                continue;
+            }
+
+            // if (targetProp.PropertyType == typeof(RepeatedField<Any>) && sourceValue is IList)
+            // {
+            //     var messages = (RepeatedField<Any>)targetProp.GetValue(target)!;
+            //     var paramSourceData = (IList)sourceValue;
+            //     foreach (var item in paramSourceData)
+            //     {
+            //         var packedMessage =
+            //             Any.Pack((IMessage)item.Adapt<TIterableDestination>()!);
+            //         messages.Add(packedMessage);
+            //     }
+            //
+            //     continue;
+            // }
+
+            targetProp.SetValue(target, sourceValue);
+        }
+
         return target;
     }
 }

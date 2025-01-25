@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Ecom.Domain.Shared;
 using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 

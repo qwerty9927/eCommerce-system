@@ -35,4 +35,13 @@ public class ProductRepository(ApplicationDbContext context) : RepositoryAsync<P
 
         return product;
     }
+
+    public new async Task<List<Product>> GetAllAsync()
+    {
+        List<Product> products = await Table
+            .Include(p => p.ProductOptionSets)
+            .ToListAsync();
+
+        return products;
+    }
 }

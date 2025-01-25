@@ -16,7 +16,7 @@ namespace Ecom.Infrastructure.Data.Repositories
             Table = _context.Set<T>();
         }
 
-        public async Task<IList<T>> GetAsync()
+        public async Task<IList<T>> GetAllAsync()
         {
             return await Table.AsNoTracking().ToListAsync();
         }

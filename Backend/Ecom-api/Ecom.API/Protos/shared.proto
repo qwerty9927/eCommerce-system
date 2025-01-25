@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-option csharp_namespace = "Ecom.API.Protos";
+option csharp_namespace = "Ecom.API.Protos.Dtos";
 import "google/protobuf/any.proto";
 
 package shared;
 
-message IdRequest {
+message IdGrpcRequest {
   string id = 1;
 }
 
-message SearchRequest {
+message SearchGrpcRequest {
   string keyWord = 1;
   int32 pageSize = 2;
   int32 pageIndex = 3;
@@ -23,7 +23,21 @@ message GrpcResponse {
   google.protobuf.Any data = 4;
 }
 
-message PagingResponse {
+message GrpcIterableResponse {
+  string message = 1;
+  bool status = 2;
+  int32 code = 3;
+  repeated google.protobuf.Any data = 4;
+}
+
+message GrpcPagingResponse {
+  string message = 1;
+  bool status = 2;
+  int32 code = 3;
+  PagingGrpcResponse data = 4;
+}
+
+message PagingGrpcResponse {
   repeated google.protobuf.Any records = 1;
   int32 totalRecord = 2;
 }

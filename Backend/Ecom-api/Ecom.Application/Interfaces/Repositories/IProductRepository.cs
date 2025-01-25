@@ -7,4 +7,5 @@ public interface IProductRepository : IRepositoryAsync<Product>
 {
     Task<PagingResponse<Product>> SearchAsync(SearchRequest request);
     new Task<Product> GetByIdAsync(string id);
+    new Task<List<Product>> GetAllAsync();
 }

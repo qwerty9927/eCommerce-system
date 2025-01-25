@@ -2,7 +2,7 @@ namespace Ecom.Application.Dtos.Product;
 
 public class ProductDto
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
 
     public string ProductName { get; set; } = string.Empty;
 

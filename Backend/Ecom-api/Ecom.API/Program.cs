@@ -1,5 +1,5 @@
 using Ecom.API.GrpcServices;
-using Ecom.API.Middlewares;
+using Ecom.API.Mapping;
 using Ecom.Infrastructure;
 using Ecom.Application;
 
@@ -10,6 +10,8 @@ builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
+builder.Services.MappingConfiguration();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -18,7 +20,6 @@ if (app.Environment.IsDevelopment())
 }
 
 // Configure the HTTP request pipeline.
-app.MapGrpcService<GreeterService>();
 app.MapGrpcService<ProductGrpcService>();
 app.MapGet("/",
     () =>
