@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Reflection;
 using Ecom.API.Protos.Dtos;
+using Ecom.Domain.Enums;
 using Ecom.Domain.Shared;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
@@ -11,7 +12,7 @@ namespace Ecom.API.Helpers;
 
 public static class GrpcHelper
 {
-    public static TDestination ObjectTypeConverting<TSource, TDestination, TObjectDestination>(
+    private static TDestination ObjectTypeConverting<TSource, TDestination, TObjectDestination>(
         TSource source)
         where TDestination : new()
     {
@@ -38,7 +39,7 @@ public static class GrpcHelper
         return target;
     }
 
-    public static TDestination IterableTypeConverting<TSource, TDestination, TIterableDestination>(
+    private static TDestination IterableTypeConverting<TSource, TDestination, TIterableDestination>(
         TSource source)
         where TDestination : new()
     {
@@ -72,7 +73,7 @@ public static class GrpcHelper
         return target;
     }
 
-    public static TDestination PagingTypeConverting<TSource, TDestination, TIterableDestination>(
+    private static TDestination PagingTypeConverting<TSource, TDestination, TIterableDestination>(
         TSource source)
         where TDestination : new()
     {
@@ -98,23 +99,24 @@ public static class GrpcHelper
                 continue;
             }
 
-            // if (targetProp.PropertyType == typeof(RepeatedField<Any>) && sourceValue is IList)
-            // {
-            //     var messages = (RepeatedField<Any>)targetProp.GetValue(target)!;
-            //     var paramSourceData = (IList)sourceValue;
-            //     foreach (var item in paramSourceData)
-            //     {
-            //         var packedMessage =
-            //             Any.Pack((IMessage)item.Adapt<TIterableDestination>()!);
-            //         messages.Add(packedMessage);
-            //     }
-            //
-            //     continue;
-            // }
-
             targetProp.SetValue(target, sourceValue);
         }
 
         return target;
+    }
+
+    public static TDestination ConvertingStrategy<TSource, TDestination, TNestedDestination>(TSource source)
+        where TSource : BaseResponse where TDestination : IMessage, new()
+    {
+        return typeof(TDestination) switch
+        {
+            { } t when t == typeof(GrpcResponse) =>
+                ObjectTypeConverting<TSource, TDestination, TNestedDestination>(source),
+            { } t when t == typeof(GrpcIterableResponse) =>
+                IterableTypeConverting<TSource, TDestination, TNestedDestination>(source),
+            { } t when t == typeof(GrpcPagingResponse) =>
+                PagingTypeConverting<TSource, TDestination, TNestedDestination>(source),
+            _ => throw new BaseException("Converting type not supported", (int)GrpcStatusCode.Internal)
+        };
     }
 }

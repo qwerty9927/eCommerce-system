@@ -17,24 +17,15 @@ message SearchGrpcRequest {
 }
 
 message GrpcResponse {
-  string message = 1;
-  bool status = 2;
-  int32 code = 3;
-  google.protobuf.Any data = 4;
+  google.protobuf.Any data = 1;
 }
 
 message GrpcIterableResponse {
-  string message = 1;
-  bool status = 2;
-  int32 code = 3;
-  repeated google.protobuf.Any data = 4;
+  repeated google.protobuf.Any data = 1;
 }
 
 message GrpcPagingResponse {
-  string message = 1;
-  bool status = 2;
-  int32 code = 3;
-  PagingGrpcResponse data = 4;
+  PagingGrpcResponse data = 1;
 }
 
 message PagingGrpcResponse {

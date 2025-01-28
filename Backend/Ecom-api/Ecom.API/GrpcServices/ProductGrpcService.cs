@@ -20,7 +20,7 @@ public class ProductGrpcService(IProductService _productService) : ProductGrpc.P
             await _productService.SearchAsync(request.Adapt<SearchRequest>());
 
         return GrpcHelper
-            .PagingTypeConverting<BaseResponse<PagingResponse<ProductDto>>, GrpcPagingResponse,
+            .ConvertingStrategy<BaseResponse<PagingResponse<ProductDto>>, GrpcPagingResponse,
                 ProductGrpcDto>(result);
     }
 
@@ -30,7 +30,7 @@ public class ProductGrpcService(IProductService _productService) : ProductGrpc.P
         BaseResponse<ProductDto> result = await _productService.GetByIdAsync(request.Id);
 
         return GrpcHelper
-            .ObjectTypeConverting<BaseResponse<ProductDto>, GrpcResponse, ProductGrpcDto>(result);
+            .ConvertingStrategy<BaseResponse<ProductDto>, GrpcResponse, ProductGrpcDto>(result);
     }
 
     public override async Task<GrpcIterableResponse> GetAllAsync(Empty request,
@@ -39,7 +39,7 @@ public class ProductGrpcService(IProductService _productService) : ProductGrpc.P
         BaseResponse<List<ProductDto>> result = await _productService.GetAllAsync();
 
         return GrpcHelper
-            .IterableTypeConverting<BaseResponse<List<ProductDto>>, GrpcIterableResponse,
+            .ConvertingStrategy<BaseResponse<List<ProductDto>>, GrpcIterableResponse,
                 ProductGrpcDto>(result);
     }
 }

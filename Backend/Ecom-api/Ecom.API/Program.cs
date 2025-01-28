@@ -1,4 +1,5 @@
 using Ecom.API.GrpcServices;
+using Ecom.API.Interceptors;
 using Ecom.API.Mapping;
 using Ecom.Infrastructure;
 using Ecom.Application;
@@ -6,7 +7,7 @@ using Ecom.Application;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Services to the container.
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(option => { option.Interceptors.Add<CallProcessingInterceptor>(); });
 builder.Services.AddGrpcReflection();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);

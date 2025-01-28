@@ -1,12 +1,11 @@
 using System.Net;
+using Ecom.Domain.Enums;
 
 namespace Ecom.Domain.Shared;
 
 public class BaseResponse
 {
     public string Message { get; set; } = string.Empty;
-
-    public bool Status { get; set; } = true;
 
     public int Code { get; set; }
 
@@ -17,10 +16,9 @@ public class BaseResponse<T> : BaseResponse
 {
     public BaseResponse() { }
 
-    public BaseResponse(T? data, string message, bool status, int code)
+    public BaseResponse(T? data, string message, int code)
     {
         Message = message;
-        Status = status;
         Code = code;
         Data = data;
     }
@@ -28,11 +26,6 @@ public class BaseResponse<T> : BaseResponse
 
 public class SuccessResponse<T>(
     T? data,
-    string message = nameof(HttpStatusCode.OK),
-    bool status = true,
-    HttpStatusCode code = HttpStatusCode.OK) :
-    BaseResponse<T>(data, message, status, (int)code) { }
-
-public class ErrorResponse(
-    string message = nameof(HttpStatusCode.BadRequest),
-    HttpStatusCode code = HttpStatusCode.BadRequest) : BaseException(message, (int)code) { }
+    string message = nameof(GrpcStatusCode.Ok),
+    GrpcStatusCode code = GrpcStatusCode.Ok) :
+    BaseResponse<T>(data, message, (int)code) { }
