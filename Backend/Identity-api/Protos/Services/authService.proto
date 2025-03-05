@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+import "Protos/Dtos/auth.proto";
+import "Protos/shared.proto";
+
+option csharp_namespace = "Identity_api.Protos.Services";
+
+package authService;
+
+service AuthGrpc {
+  rpc LoginAsync (auth.LoginRequest) returns (shared.GrpcResponse);
+  rpc RegisterAsync (auth.RegisterRequest) returns (shared.GrpcResponse);
+  rpc CreateRoleAsync (auth.CreateRoleRequest) returns (shared.GrpcResponse);
+  rpc DeleteAsync (shared.IdGrpcRequest) returns (shared.GrpcResponse);
+}
