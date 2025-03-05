@@ -29,7 +29,7 @@ public static class GrpcHelper
             if (targetProp.PropertyType == typeof(Any))
             {
                 targetProp.SetValue(target,
-                    Any.Pack((IMessage)sourceValue.Adapt<TObjectDestination>()!));
+                    Any.Pack(ConvertBuildInType(sourceValue) ?? (IMessage)sourceValue.Adapt<TObjectDestination>()!));
                 continue;
             }
 
@@ -117,6 +117,21 @@ public static class GrpcHelper
             { } t when t == typeof(GrpcPagingResponse) =>
                 PagingTypeConverting<TSource, TDestination, TNestedDestination>(source),
             _ => throw new BaseException("Converting type not supported", (int)GrpcStatusCode.Internal)
+        };
+    }
+    
+    private static IMessage? ConvertBuildInType<TSource>(TSource source)
+    {
+        return source switch
+        {
+            bool boolValue => new BoolValue { Value = boolValue },
+            int intValue => new Int32Value { Value = intValue },
+            long longValue => new Int64Value { Value = longValue },
+            float floatValue => new FloatValue { Value = floatValue },
+            double doubleValue => new DoubleValue { Value = doubleValue },
+            string stringValue => new StringValue { Value = stringValue },
+            byte[] byteArray => new BytesValue { Value = ByteString.CopyFrom(byteArray) },
+            _ => null
         };
     }
 }
