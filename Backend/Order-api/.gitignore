@@ -1,0 +1,37 @@
+# Compiled files
+/target/
+**/*.rmeta
+
+# Rust dependencies
+/Cargo.lock
+
+# Build artifacts
+**/*.rlib
+**/*.rs.bk
+
+# Binaries and executables
+**/*.exe
+**/*.dll
+**/*.so
+**/*.dylib
+
+# Logs and temporary files
+**/*.log
+**/*.tmp
+**/*.swp
+**/*.swo
+
+# IDE and editor settings
+/.idea/
+/.vscode/
+*.iml
+
+# MacOS system files
+.DS_Store
+
+# Linux system files
+*.pid
+
+# Windows system files
+Thumbs.db
+Desktop.ini
