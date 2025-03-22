@@ -1,5 +1,3 @@
-using Grpc.Core;
-
 namespace Identity_api.Common;
 
 public class BaseResponse
@@ -25,6 +23,6 @@ public class BaseResponse<T> : BaseResponse
 
 public class SuccessResponse<T>(
     T? data,
-    string message = nameof(StatusCode.OK),
-    StatusCode code = StatusCode.OK) :
-    BaseResponse<T>(data, message, (int)code) { }
+    string message = "Success",
+    int code = StatusCodes.Status200OK) :
+    BaseResponse<T>(data, message, code) { }
