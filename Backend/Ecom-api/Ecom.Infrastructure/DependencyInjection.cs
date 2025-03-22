@@ -1,6 +1,7 @@
 using Ecom.Application.Interfaces.Repositories;
 using Ecom.Infrastructure.Data;
 using Ecom.Infrastructure.Data.Repositories;
+using Ecom.Infrastructure.Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,10 @@ public static class DependencyInjection
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
+        
+        // Register HTTP Clients
+        services.AddHttpClient<RestHttpClientHelper>();
+
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ICartRepository, CartRepository>();

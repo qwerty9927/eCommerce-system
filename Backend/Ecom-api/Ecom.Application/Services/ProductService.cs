@@ -7,11 +7,11 @@ using Mapster;
 
 namespace Ecom.Application.Services;
 
-public class ProductService(IProductRepository _productRepository) : IProductService
+public class ProductService(IProductRepository productRepository) : IProductService
 {
     public async Task<BaseResponse<PagingResponse<ProductDto>>> SearchAsync(SearchRequest request)
     {
-        PagingResponse<Product> result = await _productRepository.SearchAsync(request);
+        PagingResponse<Product> result = await productRepository.SearchAsync(request);
 
         return new SuccessResponse<PagingResponse<ProductDto>>(
             result.Adapt<PagingResponse<ProductDto>>());
@@ -19,14 +19,14 @@ public class ProductService(IProductRepository _productRepository) : IProductSer
 
     public async Task<BaseResponse<ProductDto>> GetByIdAsync(string productId)
     {
-        Product result = await _productRepository.GetByIdAsync(productId);
+        Product result = await productRepository.GetByIdAsync(productId);
 
         return new SuccessResponse<ProductDto>(result.Adapt<ProductDto>());
     }
 
     public async Task<BaseResponse<List<ProductDto>>> GetAllAsync()
     {
-        List<Product> result = await _productRepository.GetAllAsync();
+        List<Product> result = await productRepository.GetAllAsync();
 
         return new SuccessResponse<List<ProductDto>>(result.Adapt<List<ProductDto>>());
     }
