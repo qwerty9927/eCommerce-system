@@ -10,8 +10,8 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::{
-  common::{ApiError, ApiResponse, Data},
-  constants,
+  common::response_model::{ApiResponse, ApiError, Data},
+  constants::http_status_constant as constants,
   dtos::user_dto::{CreateRequest, UserDto},
   entities::user::User,
   schema::users,

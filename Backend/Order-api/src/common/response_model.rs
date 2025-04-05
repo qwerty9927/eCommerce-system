@@ -1,8 +1,11 @@
+use std::error::Error;
+use std::fmt;
+
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde::Serialize;
 use utoipa::ToSchema;
 
-use crate::constants;
+use crate::constants::http_status_constant as constants;
 
 #[derive(Serialize, ToSchema)]
 pub struct Data<T> {
@@ -27,11 +30,20 @@ where
   }
 }
 
+#[derive(Debug)]
 pub enum ApiError {
   BadRequest(String),
   NotFound(String),
   InternalServiceError(String),
 }
+
+impl fmt::Display for ApiError{
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+      write!(f, "{:?}", self)
+  }
+}
+
+impl Error for ApiError {}
 
 impl IntoResponse for ApiError {
   fn into_response(self) -> axum::response::Response {

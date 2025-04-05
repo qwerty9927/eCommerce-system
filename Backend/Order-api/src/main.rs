@@ -25,11 +25,13 @@ async fn main() {
 
   // build our application with a route
   let pool = db::intialized_db(&cfg.web.dns, cfg.web.max_conns).await;
+  let arc_pool = Arc::new(pool);
 
   let app = Router::new()
     // `GET /` goes to `root`‘
     .route("/", get(|| async { "Hello, World!" }))
-    .nest("/api/users", user_route::route(Arc::new(pool)))
+    .nest("/api/users", user_route::route(arc_pool.clone()))
+    // .with_state(arc_pool.clone())
     .layer(from_fn(error_handler))
     .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()));
 
