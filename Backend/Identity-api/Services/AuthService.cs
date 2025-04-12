@@ -14,7 +14,7 @@ public class AuthService(UserManager<UserModel> userManager) : BaseService, IAut
         var foundUser = await userManager.FindByNameAsync(request.Username);
         if (foundUser != null)
         {
-            throw new BaseException("Account was existed", StatusCodes.Status409Conflict);
+            throw new ConflictException("Account was existed");
         }
 
         UserModel user = new UserModel
@@ -25,8 +25,6 @@ public class AuthService(UserManager<UserModel> userManager) : BaseService, IAut
             UrlImage = request.UrlImage
         };
 
-        await EnsureModifyActionSuccess(async () => await userManager.AddToRoleAsync(user, RoleConstant.User),
-            nameof(userManager.AddToRoleAsync));
         await EnsureModifyActionSuccess(async () => await userManager.CreateAsync(user, request.Password),
             nameof(userManager.CreateAsync));
 
@@ -38,7 +36,7 @@ public class AuthService(UserManager<UserModel> userManager) : BaseService, IAut
         var foundUser = await userManager.FindByIdAsync(id);
         if (foundUser != null)
         {
-            throw new BaseException("Account was existed", StatusCodes.Status409Conflict);
+            throw new ConflictException("Account was existed");
         }
 
         await EnsureModifyActionSuccess(async () => await userManager.DeleteAsync(foundUser),

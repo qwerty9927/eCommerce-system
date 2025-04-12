@@ -4,6 +4,6 @@ namespace Identity_api.Models;
 
 public class UserModel : IdentityUser
 {
-    public string FullName { get; set; }
-    public string UrlImage { get; set; }
+    public string? FullName { get; set; }
+    public string? UrlImage { get; set; }
 }

@@ -1,10 +1,8 @@
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Identity_api.Configurations;
 using Identity_api.Helpers;
 using Identity_api.Interfaces.Service;
+using Identity_api.Middlewares;
 using Identity_api.Models;
 using Identity_api.Repositories;
 using Identity_api.Pages.Admin.ApiScopes;
@@ -13,10 +11,9 @@ using Identity_api.Pages.Admin.IdentityScopes;
 using Identity_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Protocols;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -49,7 +46,7 @@ internal static class HostingExtensions
             options.Password.RequireLowercase = false;
             options.Password.RequireUppercase = false;
             options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequiredLength = 6;
+            options.Password.RequiredLength = 8;
 
             options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             options.Lockout.MaxFailedAccessAttempts = 5;
@@ -171,6 +168,10 @@ internal static class HostingExtensions
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IRoleService, RoleService>();
 
+        // Configure model state
+        builder.Services.Configure<ApiBehaviorOptions>(options
+            => options.SuppressModelStateInvalidFilter = true);
+
         // Optional: Server-Side Sessions (if needed)
         // isBuilder.AddServerSideSessions();
 
@@ -189,6 +190,9 @@ internal static class HostingExtensions
 
         // Configure the HTTP request pipeline
         app.UseSerilogRequestLogging(); // Logs requests early
+
+        // Custome Middleware
+        app.UseMiddleware<ResponseHandlerMiddleware>();
 
         // app.UseHttpsRedirection();
         app.UseStaticFiles();

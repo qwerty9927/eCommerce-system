@@ -1,4 +1,5 @@
-﻿using Identity_api.Common;
+﻿using Identity_api.Attributes;
+using Identity_api.Common;
 using Identity_api.Dtos;
 using Identity_api.Interfaces.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,9 @@ namespace Identity_api.Controllers;
 public class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<BaseResponse<bool>> RegisterAsync([FromBody] RegisterRequest request)
+    [Consumes("application/x-www-form-urlencoded")]
+    [ModelValidation]
+    public async Task<BaseResponse<bool>> RegisterAsync([FromForm] RegisterRequest request)
     {
         return await authService.RegisterAsync(request);
     }
