@@ -1,6 +1,6 @@
 ﻿namespace Identity_api.Constants;
 
-public class RoleConstant
+public class RoleConstants
 {
     public const string User = "user";
     public const string Admin = "admin";

@@ -10,9 +10,10 @@ public class BaseResponse
     public int Code { get; set; }
 
     public bool Status { get; set; }
-
+    
     public object? Data { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Error { get; set; }
 }
 

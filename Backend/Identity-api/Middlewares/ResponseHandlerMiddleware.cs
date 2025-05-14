@@ -36,7 +36,7 @@ public class ResponseHandlerMiddleware(RequestDelegate next)
         {
             response.Message = baseException.Response.Message;
             response.Code = baseException.Response.Code;
-            response.Error = baseException.Response.Error;
+            response.Error = baseException.Response.Error ?? (object[])[];
         }
 
         var jsonOptions = new JsonSerializerOptions

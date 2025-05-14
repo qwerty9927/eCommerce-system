@@ -1,5 +1,6 @@
 using System.Reflection;
 using Identity_api.Configurations;
+using Identity_api.Extensions;
 using Identity_api.Helpers;
 using Identity_api.Interfaces.Service;
 using Identity_api.Middlewares;
@@ -33,6 +34,9 @@ internal static class HostingExtensions
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString,
                 dbOpts => dbOpts.MigrationsAssembly(typeof(Program).Assembly.FullName)));
+        
+        // Configure memory cache
+        builder.Services.AddMemoryCache();
 
         // Configure Identity
         builder.Services.AddIdentity<UserModel, IdentityRole>()
@@ -91,31 +95,33 @@ internal static class HostingExtensions
         // Configure Authentication & JWT Bearer
         var openIdConnectSettings =
             builder.Configuration.GetSection("OpenIDConnectSettings").Get<OpenIDConnectSettings>() ?? new();
+        
+        builder.Services.AddJWTServices(openIdConnectSettings);
 
-        builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.Authority = openIdConnectSettings.Authority;
-                options.RequireHttpsMetadata = false; // Set to true in production
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidateAudience = false, // Set to true if needed
-                    ValidIssuer = openIdConnectSettings.Authority,
-                    IssuerSigningKeys = JwkHelper.ConvertJwksToSecurityKeys(openIdConnectSettings.Key)
-                };
-            });
-
-        // Configure Authorization Policies
-        builder.Services.AddAuthorization(options =>
-            options.AddPolicy("admin",
-                policy => policy.RequireClaim("sub", "1"))
-        );
+        // builder.Services.AddAuthentication(options =>
+        //     {
+        //         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //     })
+        //     .AddJwtBearer(options =>
+        //     {
+        //         options.Authority = openIdConnectSettings.Authority;
+        //         options.RequireHttpsMetadata = false; // Set to true in production
+        //         options.TokenValidationParameters = new TokenValidationParameters
+        //         {
+        //             ValidateIssuerSigningKey = true,
+        //             ValidateIssuer = true,
+        //             ValidateAudience = false, // Set to true if needed
+        //             ValidIssuer = openIdConnectSettings.Authority,
+        //             IssuerSigningKeys = JwkHelper.ConvertJwksToSecurityKeys(openIdConnectSettings.Key)
+        //         };
+        //     });
+        //
+        // // Configure Authorization Policies
+        // builder.Services.AddAuthorization(options =>
+        //     options.AddPolicy("admin",
+        //         policy => policy.RequireClaim("sub", "1"))
+        // );
 
         builder.Services.Configure<RazorPagesOptions>(options =>
             options.Conventions.AuthorizeFolder("/Admin", "admin"));
@@ -171,9 +177,6 @@ internal static class HostingExtensions
         // Configure model state
         builder.Services.Configure<ApiBehaviorOptions>(options
             => options.SuppressModelStateInvalidFilter = true);
-
-        // Optional: Server-Side Sessions (if needed)
-        // isBuilder.AddServerSideSessions();
 
         // Build and return the app
         return builder.Build();

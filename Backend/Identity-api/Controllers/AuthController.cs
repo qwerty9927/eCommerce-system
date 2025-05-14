@@ -20,8 +20,8 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete]
-    public async Task<BaseResponse<bool>> DeleteAsync([FromQuery] string id)
+    [HttpDelete("{id}")]
+    public async Task<BaseResponse<bool>> DeleteAsync(string id)
     {
         return await authService.DeleteAsync(id);
     }

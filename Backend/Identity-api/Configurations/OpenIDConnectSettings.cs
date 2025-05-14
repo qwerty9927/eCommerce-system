@@ -4,6 +4,7 @@ public class OpenIDConnectSettings
 {
     public string Name { get; set; }
     public string Authority { get; set; }
+    public bool EnableIdentityUrl { get; set; }
     public string Key { get; set; }
     public GeneralGrantTypeSetting ClientCredentials { get; set; }
     public GeneralGrantTypeSetting AuthorizationCode { get; set; }
