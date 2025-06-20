@@ -143,9 +143,9 @@ public class CustomAuthenticationHandler : AuthenticationHandler<CustomAuthentic
 
                 if (signingKeysFromCache == null)
                 {
-                    string id4MetaData = $"{IdentityUrl}/.well-known/openid-configuration";
+                    string idMetaData = $"{IdentityUrl}/.well-known/openid-configuration";
                     var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
-                        id4MetaData, new OpenIdConnectConfigurationRetriever());
+                        idMetaData, new OpenIdConnectConfigurationRetriever());
                     var openIdConfig = configurationManager.GetConfigurationAsync(CancellationToken.None).Result;
 
                     signingKeysFromCache = openIdConfig.SigningKeys;

@@ -23,5 +23,8 @@ public class UnprocessableException(string message = "Unprocessable content", ob
 public class ConflictException(string message = "Conflict", object? error = null)
     : BaseException(message, StatusCodes.Status409Conflict, error) { }
 
+public class NotFoundException(string message = "Not found", object? error = null)
+    : BaseException(message, StatusCodes.Status404NotFound, error) { }
+
 public class BadRequestException(string message = "Bad Request", object? error = null)
     : BaseException(message, StatusCodes.Status400BadRequest, error) { }

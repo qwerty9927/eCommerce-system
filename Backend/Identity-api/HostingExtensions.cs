@@ -3,6 +3,7 @@ using Identity_api.Configurations;
 using Identity_api.Extensions;
 using Identity_api.Helpers;
 using Identity_api.Interfaces.Service;
+using Identity_api.Interfaces.WebApi;
 using Identity_api.Middlewares;
 using Identity_api.Models;
 using Identity_api.Repositories;
@@ -10,6 +11,7 @@ using Identity_api.Pages.Admin.ApiScopes;
 using Identity_api.Pages.Admin.Clients;
 using Identity_api.Pages.Admin.IdentityScopes;
 using Identity_api.Services;
+using Identity_api.WebApi.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -95,8 +97,8 @@ internal static class HostingExtensions
         // Configure Authentication & JWT Bearer
         var openIdConnectSettings =
             builder.Configuration.GetSection("OpenIDConnectSettings").Get<OpenIDConnectSettings>() ?? new();
-        
-        builder.Services.AddJWTServices(openIdConnectSettings);
+
+        builder.Services.AddJwtHandlerServices(openIdConnectSettings);
 
         // builder.Services.AddAuthentication(options =>
         //     {
@@ -173,6 +175,13 @@ internal static class HostingExtensions
         // Register Application Services (DI)
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IRoleService, RoleService>();
+
+        // Register Api Services (DI)
+        builder.Services.AddScoped<IIdentityApi, IdentityApi>();
+
+        // Register Configuration
+        builder.Services.Configure<OpenIDConnectSettings>(
+            builder.Configuration.GetSection(nameof(OpenIDConnectSettings)));
 
         // Configure model state
         builder.Services.Configure<ApiBehaviorOptions>(options

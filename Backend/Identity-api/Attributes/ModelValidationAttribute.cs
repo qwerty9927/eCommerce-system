@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Identity_api.Attributes;
 
-[AttributeUsage(AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class ModelValidationAttribute : ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)

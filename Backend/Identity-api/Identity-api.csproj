@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <RootNamespace>Identity_api</RootNamespace>
+        <NoWarn>1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,8 +29,6 @@
 
     <ItemGroup>
         <Folder Include="Interfaces\Repository\"/>
-        <Folder Include="Interfaces\WebApi\"/>
-        <Folder Include="WebApi\"/>
     </ItemGroup>
 
 </Project>

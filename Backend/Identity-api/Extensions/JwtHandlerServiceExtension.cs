@@ -3,9 +3,10 @@ using Identity_api.Configurations;
 
 namespace Identity_api.Extensions
 {
-    public static class SetupJWTServices
+    public static class JwtHandlerServiceExtension
     {
-        public static void AddJWTServices(this IServiceCollection services, OpenIDConnectSettings openIdConnectSettings)
+        public static void AddJwtHandlerServices(this IServiceCollection services,
+            OpenIDConnectSettings openIdConnectSettings)
         {
             bool enableIdentityUrl = openIdConnectSettings.EnableIdentityUrl;
             CustomAuthenticationHandler.EnableIdentityUrl = enableIdentityUrl;
