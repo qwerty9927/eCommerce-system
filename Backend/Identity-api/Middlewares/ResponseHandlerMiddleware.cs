@@ -27,7 +27,7 @@ public class ResponseHandlerMiddleware(RequestDelegate next)
         {
             Data = null,
             Status = false,
-            Message = "Internal server error",
+            Message = exception is Exception exp ? exp.Message : "Internal Server Error",
             Code = StatusCodes.Status500InternalServerError,
             Error = null
         };
